@@ -70,7 +70,4 @@
 
 @include('pg_widget.premium')
 
-<div class="alert popup_status">
-	<button type="button" id="close_alert" class="close">&times;</button>
-</div>
 @endsection

@@ -1,9 +1,4 @@
-@extends('layouts.app')
-
-@section('others')
-	<script type="text/javascript" src="js/general.js"></script>
-	<script type="text/javascript" src="js/countUp.js"></script>
-@endsection
+@extends('layouts.platform')
 
 @section('description')
 Calculate your Etsy paypal fees, processing fees, shipping amount and profits with our Etsy spreadsheet & fee calculator.Free Spreadsheet to record all of your sales
@@ -18,8 +13,8 @@ Etsy Fee Calculator - Calculate Etsy Fees Paypal Processing Fee
 	
 <div id="main-calculator">
 	<div class="main-container">
-    	<h1>ETSY PAYPAL FEE CALCULATOR</h1>
-	    <div class="etsy-inner">
+    	<h1 style="background:{{ $json['color']  }}">ETSY PAYPAL FEE CALCULATOR</h1>
+	    <div class="p-6">
 	    	@include('pg_widget.name_date')
 			@include('pg_widget.sold')
 			@include('pg_widget.ship_charge')
@@ -78,7 +73,6 @@ Etsy Fee Calculator - Calculate Etsy Fees Paypal Processing Fee
 				@include('inc.processing_slide')
 				@include('pg_widget.profit')
 				@include('pg_widget.add_to_sheet')
-				@include('pg_widget.premium')
 			</div>
 			@include('inc.ad')
 		</div>
@@ -94,7 +88,7 @@ Etsy Fee Calculator - Calculate Etsy Fees Paypal Processing Fee
 		</div>
 
 		<div class="about-container about-fees">
-			<h2>ABOUT ETSY FEES</h2>
+			<h2 style="background:{{ $json['color']  }}">ABOUT ETSY FEES</h2>
 			<p>Etsy is an online retail marketplace focused on vintage and handmade items. Etsy has 2 types of fees; Listing fees at $0.20 for each item you list and transaction fees at 5% of total sold price and shipping combined. <a href="{{url('/paypal')}}">Paypal</a> or Processing fees will be included depending on the payment method you choose.</p>
 		</div>
 		@include('inc.graph')

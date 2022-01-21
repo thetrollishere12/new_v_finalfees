@@ -4,15 +4,15 @@
 </div>
 <div class="standard">
 	<div class="input-paypal-container fee_profit-inner">
-		<div>Paypal Percentage Fee</div>
-		<div><input class="standards" disabled type="" name="percent" value="2.9">%</div>
+		<div class="self-center">Paypal Percentage Fee</div>
+		<div><input class="standards border p-2" disabled type="" name="percent" value="2.9">%</div>
 	</div>
 	<div class="input-paypal-container fee_profit-inner">
-		<div>Paypal Flat Fee</div>
-		<div><input class="standards" disabled type="" name="standard" value=".30"></div>
+		<div class="self-center">Paypal Flat Fee</div>
+		<div><input class="standards border p-2 " disabled type="" name="standard" value=".30"></div>
 	</div>
 </div>
 <div class="button-container">
-	<button class="p-reset" name="p-reset">Reset</button>
-	<button class="p-edit" name="p-edit">Edit Fees</button>
+	<button class="p-reset text-sm" name="p-reset">Reset</button>
+	<button class="p-edit text-sm" name="p-edit">Edit Fees</button>
 </div>

@@ -4,15 +4,15 @@
 <div class="fee_profit-inner"><span><b>Tax: </b></span><span id="main-tax"></span></div>	
 <div class="standard">
 	<div class="input-paypal-container fee_profit-inner">
-		<div>Stripe Percentage Fee</div>
-		<div><input class="standards" disabled type="" name="percent" value="2.9">%</div>
+		<div class="self-center">Stripe Percentage Fee</div>
+		<div><input class="standards border p-2" disabled type="" name="percent" value="2.9">%</div>
 	</div>
 	<div class="input-paypal-container fee_profit-inner">
-		<div>Stripe Flat Fee</div>
-		<div><input class="standards" disabled type="" name="standard" value=".30"></div>
+		<div class="self-center">Stripe Flat Fee</div>
+		<div><input class="standards border p-2" disabled type="" name="standard" value=".30"></div>
 	</div>
 </div>
 <div class="button-container">
-	<button class="p-reset" name="p-reset">Reset</button>
-	<button class="p-edit" name="p-edit">Edit Fees</button>
+	<button class="p-reset text-sm" name="p-reset">Reset</button>
+	<button class="p-edit text-sm" name="p-edit">Edit Fees</button>
 </div>

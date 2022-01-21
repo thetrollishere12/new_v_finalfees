@@ -18,7 +18,7 @@
 				<tr>
 					<th>Account Type</th>
 
-					@if(Auth::user()->subscribed('main'))
+					@if(user_is_subscribed())
 
 					<th>
 						<p class="premium">Premium</p>
@@ -56,7 +56,7 @@
 
 					@if($subscription->payment_method == 'Stripe')
 
-					<th><img class="card_img" src="image/{{ strtolower(Auth::user()->card_brand) }}.svg"></th>
+					<th><img class="card_img" src="image/{{ strtolower(Auth::user()->pm_type) }}.svg"></th>
 
 					<th><a href="{{url('/editpayment')}}"><button class="edit_p_btn">Edit</button></a></th>
 
@@ -64,7 +64,7 @@
 
 					<th><img class="card_img" src="image/paypal.svg"> {{ Auth::user()->paypal_email }}</th>
 
-					<th><a href="{{url('/editpayment')}}"><button class="edit_p_btn">Edit</button></a></th>
+			<!-- 		<th><a href="{{url('/editpayment')}}"><button class="edit_p_btn">Edit</button></a></th> -->
 
 					@else
 

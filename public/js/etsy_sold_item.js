@@ -1,8 +1,6 @@
 $("#auto_sold").addClass("select-blue");
 
 
-
-
 // function selectPage(e) {
 //     var etsy_id = $('#active_account').find(":selected").val();
 //     var t = $.trim(e);

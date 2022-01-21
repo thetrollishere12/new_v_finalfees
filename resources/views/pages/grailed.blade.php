@@ -1,9 +1,4 @@
-@extends('layouts.app')
-
-@section('others')
-	<script type="text/javascript" src="js/general.js"></script>
-	<script type="text/javascript" src="js/countUp.js"></script>
-@endsection
+@extends('layouts.platform')
 
 @section('description')
 Calculate your {{date("Y")}} Grailed Paypal fees, shipping and profits with our Grailed Spreadsheet & fee calculator. Free Spreadsheet to record all of your sales.
@@ -17,8 +12,8 @@ Grailed Paypal Fee Calculator & Spreadsheet
 
 <div id="main-calculator">
 	<div class="main-container">
-    	<h1>GRAILED PAYPAL FEE CALCULATOR</h1>
-    	<div class="grailed-inner">
+    	<h1 style="background:{{ $json['color']  }}">GRAILED PAYPAL FEE CALCULATOR</h1>
+    	<div class="p-6">
     		@include('pg_widget.name_date')
 			@include('pg_widget.sold')
 			@include('pg_widget.ship_charge')
@@ -51,7 +46,6 @@ Grailed Paypal Fee Calculator & Spreadsheet
 				@include('inc.paypal_slide')
 				@include('pg_widget.profit')
 				@include('pg_widget.add_to_sheet')
-				@include('pg_widget.premium')
 			</div>
 			@include('inc.ad')
 		</div>
@@ -67,7 +61,7 @@ Grailed Paypal Fee Calculator & Spreadsheet
 		</div>
 
 		<div class="about-container">
-			<h2>ABOUT GRAILED FEES</h2>
+			<h2 style="background:{{ $json['color']  }}">ABOUT GRAILED FEES</h2>
 			<p>Grailed is an online fasion marketplace focused on vintage, high-end, and popular street brands such as, Champion, Nike or Gucci. Free for many users to make an account, Grailed offers low fees for sellers. For each time a transaction is made grailed takes a 9% commission of the sold price plus <a href="{{url('/paypal')}}">Paypal fees</a>.</p>
 		</div>
 		@include('inc.graph')

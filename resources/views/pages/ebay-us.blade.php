@@ -1,9 +1,4 @@
-@extends('layouts.app')
-
-@section('others')
-	<script type="text/javascript" src="js/general.js"></script>
-	<script type="text/javascript" src="js/countUp.js"></script>
-@endsection
+@extends('layouts.platform')
 
 @section('description')
 Calculate & file your USA eBay fees, eBay store, eBay Paypal fees, profits and listing upgrade fees with our United States Ebay spreadsheet & fee calculator.
@@ -33,8 +28,8 @@ Calculate USA eBay Paypal Fee Calculator & Spreadsheet
 			</a>
 		</div>
 		<div class="whole-calculator">
-			<h1>USA EBAY PAYPAL FEE CALCULATOR</h1>
-			<div class="ebay-inner">
+			<h1 style="background:{{ $json['color']  }}">USA EBAY PAYPAL FEE CALCULATOR</h1>
+			<div class="p-6">
 				@include('pg_widget.name_date')
 				@include('pg_widget.sold')
 				@include('pg_widget.ship_charge')
@@ -135,15 +130,9 @@ Calculate USA eBay Paypal Fee Calculator & Spreadsheet
 						</div>
 						<div>
 							<select name="category">
-								<option value=".915">Others</option>
-								<option value=".815">Automotive Tools, Supplies, Parts & Accessories</option>
-								<option value="1.2">Books, DVDs & Movies, Music(Except Records Category)</option>
-								<option value=".615">Coins & Paper Money and Stamps</option>
-								<option value=".4">Computer/Tablets & Networking and Video Game Consoles</option>
-								<option value=".615">Consumer Electronics, Cameras and Photos</option>
-								<option value=".4">Heavy Equipment and Concession Trailers & Carts</option>
-								<option value=".4">Imaging & Aesthetics Equipment and Commercial Printing Presses</option>
-								<option value=".715">Musical Instrument & Gear</option>
+								@foreach($json["fees"]["fee_type"]["category_fees"]["list"] as $select)
+								<option value="{{ $select['amount']/10 }}">{{ $select['name'] }} ({{ $select['amount'] }}%)</option>
+								@endforeach
 							</select>
 						</div>
 					</div>
@@ -189,56 +178,30 @@ Calculate USA eBay Paypal Fee Calculator & Spreadsheet
 					</div>
 				</div>
 				<div class="list_up_ctn" style="display: none;">
+
 					<label class="container">Free Listing
 						<span class="upgrade-cost"></span>
 						<input checked class="upgrade-box" type="checkbox" value="0">
 						<span class="checkmark"></span>
 					</label>
-					<label class="container">1 or 3 Day Listing 
-						<span class="upgrade-cost double">+ $1.00</span>
-						<input class="upgrade-box" type="checkbox" value="1">
+
+					@foreach($json["fees"]["fee_type"]["listing_upgrade_fees"]["list"] as $select)
+
+
+					<label class="container">{{ $select['name'] }}
+						<span class="upgrade-cost double">+ ${{ number_format($select['amount'],2) }}</span>
+						<input class="upgrade-box" type="checkbox" value="{{ $select['amount'] }}">
 						<span class="checkmark"></span>
 					</label>
+
+					@endforeach
+
 					<label class="container">2 Categories
 						<span class="upgrade-cost"> - Doubles all listing uptrade fees</span>
 						<input class="upgrade-box" id="upgrade-double" type="checkbox" value="double">
 						<span class="checkmark"></span>
 					</label>
-					<label class="container">Bold
-						<span class="upgrade-cost double">+ $2.00</span>
-						<input class="upgrade-box" type="checkbox" value="2">
-						<span class="checkmark"></span>
-					</label>
-					<label class="container">Gallery Plus
-						<span class="upgrade-cost double">+ $0.35</span>
-						<input class="upgrade-box disabled" type="checkbox" value=".35">
-						<span class="checkmark"></span>
-					</label>
-					<label class="container">International Site Visibility
-						<span class="upgrade-cost double">+ $0.10</span>
-						<input class="upgrade-box" type="checkbox" value=".10">
-						<span class="checkmark"></span>
-					</label>
-					<label class="container">Scheduled Listing
-						<span class="upgrade-cost double">+ $0.10</span>
-						<input class="upgrade-box" type="checkbox" value=".10">
-						<span class="checkmark"></span>
-					</label>
-					<label class="container">Listing Designer
-						<span class="upgrade-cost double">+ $0.10</span>
-						<input class="upgrade-box disabled" type="checkbox" value=".10">
-						<span class="checkmark"></span>
-					</label>
-					<label class="container">Subtitle
-						<span class="upgrade-cost double">+ $1.00</span>
-						<input class="upgrade-box disabled" type="checkbox" value="1">
-						<span class="checkmark"></span>
-					</label>
-					<label class="container">Value Pack
-						<span class="upgrade-cost double value">+ $0.65 - Includes Gallery Plus, Scheduled Listing & Subtitle</span>
-						<input class="upgrade-box value_number" type="checkbox" value="0.65">
-						<span class="checkmark"></span>
-					</label>
+
 				</div>
 				<div class="fee_profit-container">
 
@@ -247,7 +210,6 @@ Calculate USA eBay Paypal Fee Calculator & Spreadsheet
 					@include('inc.paypal_slide')
 					@include('pg_widget.profit')
 					@include('pg_widget.add_to_sheet')
-					@include('pg_widget.premium')
 				</div>
 				@include('inc.ad')
 			</div>
@@ -263,7 +225,7 @@ Calculate USA eBay Paypal Fee Calculator & Spreadsheet
 			</p>
 		</div>
 		<div class="about-container about-fees">
-			<h2>ABOUT EBAY FEES</h2>
+			<h2 style="background:{{ $json['color']  }}">ABOUT EBAY FEES</h2>
 			<p>eBay is an online marketplace where users buy and sell products. eBay has 3 types of fees: Final Value Fee, Insertion Fee and Listing Upgrade Fee. A final value fee is charged when an item is sold where eBay takes 10% of the sold price and shipping charge combined plus <a href="{{url('/paypal')}}">Paypal fees</a>. If you run out of free listings, a $0.30 insertion fee is charged when you list an item. A listing upgrade fee is charged with any additional upgrades to your listing, such as extra categories or bolded titles.</p>
 		</div>
 		@include('inc.graph')

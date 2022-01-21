@@ -11,11 +11,11 @@
 	<div class="spreadsheet-inner">
 		<div class="spreadsheet-list-container">
 			<div class="spreadsheet-list">
-				<h2 id="summary" class="b-click summary-tab sheet">Summary</h2>
+				<h2 onclick="summary();" id="summary" class="b-click summary-tab sheet">Summary</h2>
 				<h2>Your Spreadsheets</h2>
 				<ul class="sheet-ul"></ul>
 				<div class="create-container">
-					<button type="button" class="new_sheet_btn"  data-toggle="modal" data-target="#add_page">Create Spreadsheet</button>
+					<button type="button" class="new_sheet_btn my-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Create Spreadsheet</button>
 				</div>
 			</div>
 		</div>
@@ -52,14 +52,14 @@
 
 						<p>Total Sales: <span id="sum_sales"></span></p>
 						<p>Total Sold: <span id="sum_sold"></span></p>
-	                    <p>Total Item Cost: <span id="sum_cost"></span></p>
-	                    <p>Total Shipping Charge: <span id="sum_ship_charge"></span></p>
-	                    <p>Total Shipping Cost: <span id="sum_ship_cost"></span></p>
-	                    <p>Total Fees: <span id="sum_fees"></span></p>
-	                    <p>Total Paypal/Proc Fees: <span id="sum_p_fees"></span></p>
-	                    <p>Total Tax: <span id="sum_tax"></span></p>
-	                    <p>Total Expense: <span id="sum_expense"></span></p>
-	                    <p>Total Profit: <span id="sum_profit"></span></p>
+            <p>Total Item Cost: <span id="sum_cost"></span></p>
+            <p>Total Shipping Charge: <span id="sum_ship_charge"></span></p>
+            <p>Total Shipping Cost: <span id="sum_ship_cost"></span></p>
+            <p>Total Fees: <span id="sum_fees"></span></p>
+            <p>Total Paypal/Proc Fees: <span id="sum_p_fees"></span></p>
+            <p>Total Tax: <span id="sum_tax"></span></p>
+            <p>Total Expense: <span id="sum_expense"></span></p>
+            <p>Total Profit: <span id="sum_profit"></span></p>
 					</div>
 				</div>
     			<div class="summary-case">
@@ -71,7 +71,7 @@
 
 	    			<div class="summary-case">
 	    				<p>Bar Chart</p>
-	    				@if(Auth::user()->subscribed('main'))
+	    				@if(user_is_subscribed())
 	    				<div>
 	    					<canvas id="barchart"></canvas>
 	    				</div>
@@ -88,7 +88,7 @@
 	    			</div>
 	    			<div class="summary-case">
 	    				<p>Year Line Graph</p>
-	    				@if(Auth::user()->subscribed('main'))
+	    				@if(user_is_subscribed())
 	    				<div>
 	    				
 		    				{{ Form::selectYear('year', \Carbon\Carbon::now()->year, 2019) }}
@@ -121,16 +121,18 @@
 	    				@endif
 	    			</div>
 			</div>
+
 			<div id="spreadsheet_title">
 				<span id="title">Sales</span>
 		<!-- 		<button class="print_btn">Print</button> -->
 			</div>
+
 			<div class="filter-container">
 				<div class="filter-inner">
 					<div class="sort-ctn">
 					Sort By
 						<select name="sort">
-							<option value="sale_date">Date</option>
+							<option value="date">Date</option>
 							<option value="name">Name</option>
 							<option value="sold_price">Sold Price</option>
 							<option value="item_cost">Item Cost</option>
@@ -168,9 +170,10 @@
 	</div>
 
 	@include('pg_widget.add_sheet')
-	<div class="modal fade" id="name_edit" aria-hidden="true">
+
+	<div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="EditModal" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
+	    <div class="modal-content modal-content-spreadsheet">
 	      <div class="modal-header">
 	        <h5 class="modal-title" id="exampleModalLabel">Edit Spreadsheet</h5>
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -195,23 +198,11 @@
 
 	@include('pg_widget.premium')
 
-	<div class="alert popup_status">
-		<button type="button" id="close_alert" class="close">&times;</button>
-	</div>
-
 <style type="text/css">
 
 	ul button{
 		display: block;
 	}
-
-	.popup_status{
-		position:fixed;top: 80%;left: 50%;transform: translate(-50%, -50%);
-    	z-index: 10;
-    	display: none;
-    	color: white;
-	}
-	
 	
 	.th-case {
 		display:flex;

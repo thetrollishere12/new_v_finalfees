@@ -1,9 +1,4 @@
-@extends('layouts.app')
-
-@section('others')
-	<script type="text/javascript" src="js/general.js"></script>
-	<script type="text/javascript" src="js/countUp.js"></script>
-@endsection
+@extends('layouts.platform')
 
 @section('description')
 Calculate your Poshmark fees, selling fees and profits with our Poshmark spreadsheet & fee calculator. Free Spreadsheet to record all of your sales.
@@ -17,8 +12,8 @@ Poshmark Fee Calculator & Spreadsheet - Calculate Poshmark Fees
 
 <div id="main-calculator">
 	<div class="main-container">
-    	<h1>POSHMARK FEE CALCULATOR</h1>
-    	<div class="poshmark-inner">
+    	<h1 style="background:{{ $json['color']  }}">POSHMARK FEE CALCULATOR</h1>
+    	<div class="p-6">
     		@include('pg_widget.name_date')
 			<div class="input-container">
 				<div class="label">
@@ -90,13 +85,10 @@ Poshmark Fee Calculator & Spreadsheet - Calculate Poshmark Fees
 				</div>
 				<div class="fee_profit-inner"><span><b>Tax: </b></span><span id="main-tax"></span></div>
 
-				<div class="button-container">
-					<button class="p-reset" name="p-reset">Reset</button>
-				</div>
+				<x-reset-button></x-reset-button>
 
 				@include('pg_widget.profit')
 				@include('pg_widget.add_to_sheet')
-				@include('pg_widget.premium')
 			</div>
 			@include('inc.ad')
 		</div>
@@ -112,7 +104,7 @@ Poshmark Fee Calculator & Spreadsheet - Calculate Poshmark Fees
 		</div>
 
 		<div class="about-container">
-			<h2>ABOUT POSHMARK FEES</h2>
+			<h2 style="background:{{ $json['color']  }}">ABOUT POSHMARK FEES</h2>
 			<p>Poshmark is a online marketplace where users buy and sell fashion. With every item sold a Poshmark selling fee is charged. For all sales under $20 Poshmark takes a flat fee of $2.95 for US & $3.95 for Canada. For all sales over $20, Poshmark takes a commission of 20% of the total sale.</p>
 		</div>
 		@include('inc.graph')

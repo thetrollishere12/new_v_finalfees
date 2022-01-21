@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use App\Models\Spreadsheet;
 use App\Models\Sale;
-use App\expense;
+use App\Models\Expense;
 use DB;
 use PDF;
 use File;
@@ -16,90 +16,68 @@ use Carbon\Carbon;
 
 class SpreadsheetController extends Controller
 {
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
 
     public function __construct()
     {
         $this->middleware(['auth', 'verified']);
     }
 
-    /**
-     * Display spreadsheet.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
     public function index()
     {   
-            $page = "spreadsheet";
-            return view('spreadsheet.index')->with(['page'=>$page]);
+        $page = "spreadsheet";
+        return view('spreadsheet.index')->with(['page'=>$page]);
     }
 
     /**
     * Query.
-    * @param  int $request->spreadsheet_id
-    * @return \Illuminate\Http\Response
-    * @param  \Illuminate\Http\Request $request
     */
 
     private function query($request){
-         $query  = DB::table('sales')
-        ->where('user_id', '=', Auth::id())
-        ->whereBetween('sale_date',[$request->start_date, $request->end_date])
+
+        
+
+        $sales = Sale::where('user_id', '=', Auth::id())
+        ->whereBetween('date',[$request->start_date, $request->end_date])
         ->orderBy($request->sort,$request->sort_order)
-        ->where('name','LIKE',"%{$request->name}%");
+        ->where('name','LIKE',"%{$request->name}%")
+        ->when($request->spreadsheet_id != "summary", function($q){$q->where('spreadsheet_id', request('spreadsheet_id'));})
+        ->when(user_is_subscribed() == false, function($q){$q->take(25);})
+        ->paginate(25);
 
-        // $expense = DB::table('expenses')
-        // ->where('user_id', '=', Auth::id())
-        // ->whereBetween('sale_date',[$request->start_date, $request->end_date])
-        // ->orderBy($request->sort,$request->sort_order)
-        // ->where('name','LIKE',"%{$request->name}%");
-        $expense = DB::table('expenses')
-        ->where('user_id', '=', Auth::id())
-        ->whereBetween('date',[$request->start_date, $request->end_date]);
+        $all_sales = Sale::where('user_id', '=', Auth::id())
+        ->whereBetween('date',[$request->start_date, $request->end_date])
+        ->orderBy($request->sort,$request->sort_order)
+        ->where('name','LIKE',"%{$request->name}%")
+        ->when($request->spreadsheet_id != "summary", function($q){$q->where('spreadsheet_id', request('spreadsheet_id'));})
+        ->when(user_is_subscribed() == false, function($q){$q->take(25);})
+        ->get();
 
-        if (Auth::user()->subscribed('main')) {
-           if ($request->sheet_sum == "summary-page") {
-                $sales = $query->get();
-                $limit = $query->paginate(25);
-                $ex = $expense->get();
-                $exlimit = $expense->paginate(25);
-           }else{
-                $sales = $query->where('spreadsheet_id', '=', $request->spreadsheet_id)->get();
-                $limit = $query->where('spreadsheet_id', '=', $request->spreadsheet_id)->paginate(25);
-                $ex = $expense->where('spreadsheet_id', '=', $request->spreadsheet_id)->get();
-                $exlimit = $expense->where('spreadsheet_id', '=', $request->spreadsheet_id)->paginate(25);
-           }
-        }else{
-            if ($request->sheet_sum == "summary-page") {
-                $sales = $query->take(25)->get();
-                $limit = $query->paginate(25);
-                $ex = $expense->take(25)->get();
-                $exlimit = $expense->paginate(25);
-           }else{
-                $sales = $query->where('spreadsheet_id', '=', $request->spreadsheet_id)->take(25)->get();
-                $limit = $query->where('spreadsheet_id', '=', $request->spreadsheet_id)->paginate(25);
-                $ex = $expense->where('spreadsheet_id', '=', $request->spreadsheet_id)->take(25)->get();
-                $exlimit = $expense->where('spreadsheet_id', '=', $request->spreadsheet_id)->paginate(25);
-           }
-        } 
+        $expenses = Expense::where('user_id', '=', Auth::id())
+        ->whereBetween('date',[$request->start_date, $request->end_date])
+        ->orderBy($request->sort,$request->sort_order)
+        ->where('name','LIKE',"%{$request->name}%")
+        ->when($request->spreadsheet_id != "summary", function($q){$q->where('spreadsheet_id', request('spreadsheet_id'));})
+        ->when(user_is_subscribed() == false, function($q){$q->take(25);})
+        ->paginate(25);
+
+        $all_expenses = Expense::where('user_id', '=', Auth::id())
+        ->whereBetween('date',[$request->start_date, $request->end_date])
+        ->orderBy($request->sort,$request->sort_order)
+        ->where('name','LIKE',"%{$request->name}%")
+        ->when($request->spreadsheet_id != "summary", function($q){$q->where('spreadsheet_id', request('spreadsheet_id'));})
+        ->when(user_is_subscribed() == false, function($q){$q->take(25);})
+        ->get();
+
         return array(
-        'sales'=>$sales,
-        'limit'=>$limit,
-        'expense'=>$ex,
-        'exlimit'=>$exlimit
+            'sales'=>$sales,
+            'all_sales'=>$all_sales,
+            'expense'=>$expenses,
+            'all_expense'=>$all_expenses
         );
     }
 
     /**
     * Selecting Spreadsheet.
-    * @param  int $request->spreadsheet_id
-    * @param  \Illuminate\Http\Request $request
-    * @return \Illuminate\Http\Response
     */
 
     public function select(Request $request){
@@ -107,59 +85,79 @@ class SpreadsheetController extends Controller
         if ($request->spreadsheet_id && $request->ajax()) { 
 
            $query = $this->query($request);
+
             return response()->json([
-                "sales"=> $this->numbers($query['sales']),
-                "limit"=> $this->grid($query['limit'],$query['sales']),
-                "expense"=>$this->exnumbers($query['expense']),
-                "exlimit"=> $this->gridexpense($query['exlimit'],$query['expense'])
+                "sales_number"=> $this->sales_numbers($query['all_sales']),
+                "sales"=> $this->sales_grid($query['sales']),
+                "expense_number"=>$this->expense_numbers($query['all_expense']),
+                "expense"=> $this->expense_grid($query['expense'])
             ]);
 
         }       
 
     }
 
+    public function sales_numbers($sales){
 
-    public function gridexpense($limit,$sales){
+            return array(
+                'status'=> 'valid',
+                'spreadsheet_sales'=>array(
+                    "sales"          =>$sales->count(),
+                    "sold_price"     =>$sales->sum('sold_price'),
+                    "shipping_charge"=>$sales->sum('shipping_charge'),
+                    "item_cost"      =>$sales->sum('item_cost'),
+                    "shipping_cost"  =>$sales->sum('shipping_cost'),
+                    "fees"           =>$sales->sum('fees')+$sales->sum('other_fees'),
+                    "p_fees"         =>$sales->sum('processing_fees'),
+                    "tax"            =>$sales->sum('tax'),
+                    "profit"         =>$sales->sum('profit')
+                )
+            );
+
+    }
+
+    public function sales_grid($sales){
+
+        $json = json_decode(file_get_contents(storage_path()."/json/currency.json"), true); 
+
         if ($sales->count()>0) {
-            return view('pg_widget.expense', compact('limit'))->render();
+            return view('pg_widget.sales',['sales'=>$sales,'json'=>$json])->render();
+        }else{
+            return "<a href='company'><button id='emp' class='empty_btn'>Empty</button></a>";
+        }
+    }
+
+    public function expense_numbers($sales){
+
+        return array(
+            'status'=> 'valid',
+            'spreadsheet_ex'=>array(
+            "expense"=>$sales->sum('amount')+$sales->sum('tax')
+            )
+        );
+
+    }
+
+    public function expense_grid($expenses){
+
+        $json = json_decode(file_get_contents(storage_path()."/json/currency.json"), true); 
+
+        if ($expenses->count()>0) {
+            return view('pg_widget.expense',['expenses'=>$expenses,'json'=>$json])->render();
         }else{
             return "<a href='expense'><button id='emp' class='empty_btn'>Enter Expense</button></a>";
         }
     }
 
-    public function exnumbers($sales){
-        if ($sales->count()>0) {
-
-            return array(
-                'status'=> 'valid',
-                'spreadsheet_ex'=>array(
-                "expense"=>$sales->sum('amount')+$sales->sum('tax')
-                )
-            );
-
-        }else{
-
-            return array(
-                'status' => 'empty',
-                'spreadsheet_ex'=>array(
-                "expense"         =>0.00
-                )
-            );
-        }
-    }
-
     /**
     * Paginating Spreadsheets.
-    * @param  int $request->spreadsheet_id
-    * @param  \Illuminate\Http\Request $request
-    * @return \Illuminate\Http\Response
     */
 
     public function paginate(Request $request){
         if($request->ajax()){
 
             $query = $this->query($request);
-            return $this->grid($query['limit'],$query['sales']);
+            return $this->sales_grid($query['sales']);
 
         }
             
@@ -169,7 +167,7 @@ class SpreadsheetController extends Controller
         if($request->ajax()){
 
             $query = $this->query($request);
-            return $this->gridexpense($query['exlimit'],$query['expense']);
+            return $this->expense_grid($query['expense']);
 
         }
             
@@ -177,10 +175,6 @@ class SpreadsheetController extends Controller
 
     /**
     * Deleting a sale.
-    * @param  int $request->spreadsheet_id
-    * @param  int $request->item_id
-    * @param  \Illuminate\Http\Request $request
-    * @return \Illuminate\Http\Response
     */
 
     public function delete_sale(Request $request){
@@ -191,17 +185,17 @@ class SpreadsheetController extends Controller
         ]);
 
         if (!$validator->fails() && $request->ajax()) {
-        $saved = Sales::where('id',$request->item_id)->where('spreadsheet_id', $request->spreadsheet_id)->delete();
+        $saved = Sale::where('id',$request->item_id)->where('spreadsheet_id', $request->spreadsheet_id)->delete();
 
             if ($saved) {
 
             $query = $this->query($request);
             
             return response()->json([
-                "sales"=> $this->numbers($query['sales']),
-                "limit"=> $this->grid($query['limit'],$query['sales']),
-                "expense"=>$this->exnumbers($query['expense']),
-                "exlimit"=> $this->gridexpense($query['exlimit'],$query['expense'])
+                "sales_number"=> $this->sales_numbers($query['all_sales']),
+                "sales"=> $this->sales_grid($query['sales']),
+                "expense_number"=>$this->expense_numbers($query['all_expense']),
+                "expense"=> $this->expense_grid($query['expense'])
             ]);
 
             }
@@ -218,17 +212,17 @@ class SpreadsheetController extends Controller
         ]);
 
         if (!$validator->fails() && $request->ajax()) {
-        $saved = expense::where('id',$request->item_id)->where('spreadsheet_id', $request->spreadsheet_id)->delete();
+        $saved = Expense::where('id',$request->item_id)->where('spreadsheet_id', $request->spreadsheet_id)->delete();
 
             if ($saved) {
 
             $query = $this->query($request);
             
             return response()->json([
-                "sales"=> $this->numbers($query['sales']),
-                "limit"=> $this->grid($query['limit'],$query['sales']),
-                "expense"=>$this->exnumbers($query['expense']),
-                "exlimit"=> $this->gridexpense($query['exlimit'],$query['expense'])
+                "sales_number"=> $this->sales_numbers($query['all_sales']),
+                "sales"=> $this->sales_grid($query['sales']),
+                "expense_number"=>$this->expense_numbers($query['all_expense']),
+                "expense"=> $this->expense_grid($query['expense'])
             ]);
 
             }
@@ -239,10 +233,6 @@ class SpreadsheetController extends Controller
 
     /**
     * Editing a sale.
-    * @param  int $request->spreadsheet_id
-    * @param  int $request->item_id
-    * @param  \Illuminate\Http\Request $request
-    * @return \Illuminate\Http\Response
     */
 
     public function edit_sale(Request $request){
@@ -254,14 +244,14 @@ class SpreadsheetController extends Controller
 
         if (!$validator->fails() && $request->ajax()) {
             $saved = new Sale;
-            $saved = Sales::find($request->item_id);
+            $saved = Sale::find($request->item_id);
             // if ($saved->profit != $request->profit) {
             //     $profit = $request->profit;
             // }else{
             //     $profit = ($request->sold_price+$request->shipping_charge)-($request->item_cost+$request->shipping_cost+$request->fees+$request->other_fees+$request->processing_fees+$request->tax);
             // }
             $saved->spreadsheet_id = $request->spreadsheet_id;
-            $saved->sale_date = $request->date;
+            $saved->date = $request->date;
             $saved->currency = $request->currency;
             $saved->name = $request->itm_name;
             $saved->sold_price = $request->name;
@@ -280,8 +270,8 @@ class SpreadsheetController extends Controller
                 $query = $this->query($request);
 
                 return [
-                    "sales" => $this->numbers($query['sales']),
-                    "expense" => $this->exnumbers($query['expense'])
+                    "sales" => $this->sales_numbers($query['sales']),
+                    "expense" => $this->expense_numbers($query['expense'])
                 ];
 
             }
@@ -296,8 +286,8 @@ class SpreadsheetController extends Controller
         ]);
 
         if (!$validator->fails() && $request->ajax()) {
-            $saved = new expense;
-            $saved = expense::find($request->item_id);
+            $saved = new Expense;
+            $saved = Expense::find($request->item_id);
             $saved->spreadsheet_id = $request->spreadsheet_id;
             $saved->date = $request->date;
             $saved->currency = $request->currency;
@@ -313,8 +303,8 @@ class SpreadsheetController extends Controller
                 $query = $this->query($request);
 
                 return [
-                    "sales" => $this->numbers($query['sales']),
-                    "expense" => $this->exnumbers($query['expense'])
+                    "sales" => $this->sales_numbers($query['sales']),
+                    "expense" => $this->expense_numbers($query['expense'])
                 ];
 
             }
@@ -324,31 +314,21 @@ class SpreadsheetController extends Controller
 
     /**
     * Getting Spreadsheet List.
-    * @param  \Illuminate\Http\Request $request
-    * @return \Illuminate\Http\Response
     */
 
     public function sheet_list(Request $request){
         if ($request->ajax()) {
         
-            if (Auth::user()->subscribed('main')) {
-                $spreadsheet = Spreadsheet::where('user_id', '=', Auth::id());
-            }else{
-                $spreadsheet = Spreadsheet::where('user_id', '=', Auth::id())->take(3);
-            }
+            $spreadsheet = Spreadsheet::where('user_id', '=', Auth::id())->when(user_is_subscribed() == false, function($q){$q->take(3);})->get();
 
             return response()->json([
-                'list'=>$spreadsheet->get()->toArray()
+                'list'=>$spreadsheet->toArray()
             ]);
         }
     }
 
     /**
     * Storing a List.
-    * @param  int $request->spreadsheet_id
-    * @param  int $request->item_id
-    * @param  \Illuminate\Http\Request $request
-    * @return \Illuminate\Http\Response
     */
                  
     public function store(Request $request){
@@ -364,7 +344,7 @@ class SpreadsheetController extends Controller
                 $saved->user_id = Auth::id();
                 $saved->spreadsheet_name = $request->spreadsheet_name;
     
-                if (Auth::user()->subscribed('main')) {
+                if (user_is_subscribed()) {
                     $saved->save();
                     return response()->json([
                          "status"=>$this->popup($saved),
@@ -391,9 +371,6 @@ class SpreadsheetController extends Controller
 
     /**
     * Updating a List.
-    * @param  int $request->spreadsheet_id
-    * @param  \Illuminate\Http\Request $request
-    * @return \Illuminate\Http\Response
     */
 
     public function list_update(Request $request){
@@ -419,9 +396,6 @@ class SpreadsheetController extends Controller
 
     /**
     * Deleting a List.
-    * @param  int $request->spreadsheet_id
-    * @param  \Illuminate\Http\Request $request
-    * @return \Illuminate\Http\Response
     */
 
     public function list_delete(Request $request){
@@ -441,7 +415,7 @@ class SpreadsheetController extends Controller
                 ->where('user_id', Auth::id())
                 ->where('spreadsheet_name', $request->spreadsheet_name)->delete();
 
-                Sales::where('spreadsheet_id',$request->spreadsheet_id)
+                Sale::where('spreadsheet_id',$request->spreadsheet_id)
                 ->where('user_id', Auth::id())->delete(); 
                 
                 return $this->popup($saved);
@@ -449,81 +423,32 @@ class SpreadsheetController extends Controller
         }
     }
 
-    public function numbers($sales){
-        if ($sales->count()>0) {
-
-            return array(
-                'status'=> 'valid',
-                'spreadsheet_sales'=>array(
-                "sales"          =>$sales->count(),
-                "sold_price"     =>$sales->sum('sold_price'),
-                "shipping_charge"=>$sales->sum('shipping_charge'),
-                "item_cost"      =>$sales->sum('item_cost'),
-                "shipping_cost"  =>$sales->sum('shipping_cost'),
-                "fees"           =>$sales->sum('fees')+$sales->sum('other_fees'),
-                "p_fees"         =>$sales->sum('processing_fees'),
-                "tax"            =>$sales->sum('tax'),
-                "profit"         =>$sales->sum('profit')
-                )
-            );
-
-        }else{
-
-            return array(
-                'status' => 'empty',
-                'spreadsheet_sales'=>array(
-                "sales"          =>0,
-                "sold_price"     =>0.00,
-                "shipping_charge"=>0.00,
-                "item_cost"      =>0.00,
-                "shipping_cost"  =>0.00,
-                "fees"           =>0.00,
-                "other_fees"     =>0.00,
-                "p_fees"         =>0.00,
-                "tax"            =>0.00,
-                "profit"         =>0.00
-                )
-            );
-        }
-    }
-
-    public function grid($limit,$sales){
-        if ($sales->count()>0) {
-            return view('pg_widget.sales', compact('limit'))->render();
-        }else{
-            return "<a href='company'><button id='emp' class='empty_btn'>Empty</button></a>";
-        }
-     }
-
     /**
     * Get Monthly Stats.
-    * @param  int $request->id
-    * @param  \Illuminate\Http\Request $request
-    * @return \Illuminate\Http\Response
     */
 
     public function yearly(Request $request){
-        if (Auth::user()->subscribed('main')) {
+        if (user_is_subscribed()) {
             
-            if ($request->sheet_sum == "summary-page") {
+            if ($request->sheet_sum == "summary") {
                 if ($request->type == "total_fees") {
                     for ($i=1; $i <= 12; $i++) { 
-                        $out[] = Sales::whereMonth('sale_date', date($i))
-                        ->whereYear('sale_date','=',$request->year)
+                        $out[] = Sale::whereMonth('date', date($i))
+                        ->whereYear('date','=',$request->year)
                         ->where('user_id', Auth::id())
                         ->sum(\DB::raw('fees+other_fees+processing_fees+tax'));
                     }
                 }elseif($request->type == "expense"){
                     for ($i=1; $i <= 12; $i++) { 
-                        $out[] = expense::whereMonth('date', date($i))
+                        $out[] = Expense::whereMonth('date', date($i))
                         ->whereYear('date','=',$request->year)
                         ->where('user_id', Auth::id())
                         ->sum(\DB::raw('amount+tax'));
                     }
                 }else{
                     for ($i=1; $i <= 12; $i++) { 
-                        $out[] = Sales::whereMonth('sale_date', date($i))
-                        ->whereYear('sale_date','=',$request->year)
+                        $out[] = Sale::whereMonth('date', date($i))
+                        ->whereYear('date','=',$request->year)
                         ->where('user_id', Auth::id())
                         ->sum($request->type);
                     }
@@ -532,24 +457,24 @@ class SpreadsheetController extends Controller
             
                 if ($request->type == "total_fees") {
                     for ($i=1; $i <= 12; $i++) { 
-                        $out[] = Sales::whereMonth('sale_date', date($i))
+                        $out[] = Sale::whereMonth('date', date($i))
                         ->where('spreadsheet_id',$request->id)
-                        ->whereYear('sale_date','=',$request->year)
+                        ->whereYear('date','=',$request->year)
                         ->where('user_id', Auth::id())
                         ->sum(\DB::raw('fees+other_fees+processing_fees+tax'));
                     }
                 }elseif($request->type == "expense"){
                     for ($i=1; $i <= 12; $i++) { 
-                        $out[] = expense::whereMonth('date', date($i))
+                        $out[] = Expense::whereMonth('date', date($i))
                         ->whereYear('date','=',$request->year)
                         ->where('user_id', Auth::id())
                         ->sum(\DB::raw('amount+tax'));
                     }
                 }else{
                     for ($i=1; $i <= 12; $i++) { 
-                        $out[] = Sales::whereMonth('sale_date', date($i))
+                        $out[] = Sale::whereMonth('date', date($i))
                         ->where('spreadsheet_id',$request->id)
-                        ->whereYear('sale_date','=',$request->year)
+                        ->whereYear('date','=',$request->year)
                         ->where('user_id', Auth::id())
                         ->sum($request->type);
                     }
@@ -577,68 +502,41 @@ class SpreadsheetController extends Controller
 
     public function year_req(Request $request){
         
-
-        if ($request->sheet_sum == "summary-page") {
-        $query  = DB::table('sales')
-        ->where('user_id', '=', Auth::id())->where('sale_date','LIKE','%'.date("Y").'%')->get();
-        $ex = DB::table('expenses')
-        ->where('user_id', '=', Auth::id())->where('date','LIKE','%'.date("Y").'%')->get();
+        if ($request->sheet_sum == "summary") {
+            $sales = Sale::where('user_id', '=', Auth::id())->where('date','LIKE','%'.date("Y").'%')->get();
+            $expenses = Expense::where('user_id', '=', Auth::id())->where('date','LIKE','%'.date("Y").'%')->get();
         }else{
-        $query  = DB::table('sales')
-        ->where('user_id', '=', Auth::id())->where('sale_date','LIKE','%'.date("Y").'%')->where('spreadsheet_id',$request->spreadsheet_id)->get();
-        $ex = DB::table('expenses')
-        ->where('user_id', '=', Auth::id())->where('date','LIKE','%'.date("Y").'%')->where('spreadsheet_id',$request->spreadsheet_id)->get();
+            $sales = Sale::where('user_id', '=', Auth::id())->where('date','LIKE','%'.date("Y").'%')->where('spreadsheet_id',$request->spreadsheet_id)->get();
+            $expenses = Expense::where('user_id', '=', Auth::id())->where('date','LIKE','%'.date("Y").'%')->where('spreadsheet_id',$request->spreadsheet_id)->get();
         }
 
         return [
-            "sales" => $query,
-            "expense" => $ex
+            "sales" => $sales,
+            "expense" => $expenses
         ];
     }
 
     public function download(Request $request){
 
-             $query  = DB::table('sales')
-            ->where('user_id', '=', Auth::id())
-            ->whereBetween('sale_date',[$request->start_date, $request->end_date])
+            $sales = Sale::where('user_id', '=', Auth::id())
+            ->whereBetween('date',[$request->start_date, $request->end_date])
             ->orderBy($request->sort,$request->sort_order)
-            ->where('name','LIKE',"%{$request->name}%");
+            ->where('name','LIKE',"%{$request->name}%")
+            ->when($request->spreadsheet_id != "summary", function($q){$q->where('spreadsheet_id', request('spreadsheet_id'));})
+            ->when(user_is_subscribed() == false, function($q){$q->take(25);})
+            ->get();
 
-            $expense = DB::table('expenses')
-            ->where('user_id', '=', Auth::id())
-            ->whereBetween('date',[$request->start_date, $request->end_date]);
-
-            if (Auth::user()->subscribed('main')) {
-               if ($request->sheet_sum == "summary-page") {
-                    $sales = $query->get();
-                    $limit = $query->paginate(25);
-                    $ex = $expense->get();
-                    $exlimit = $expense->paginate(25);
-               }else{
-                    $sales = $query->where('spreadsheet_id', '=', $request->spreadsheet_id)->get();
-                    $limit = $query->where('spreadsheet_id', '=', $request->spreadsheet_id)->paginate(25);
-                    $ex = $expense->where('spreadsheet_id', '=', $request->spreadsheet_id)->get();
-                    $exlimit = $expense->where('spreadsheet_id', '=', $request->spreadsheet_id)->paginate(25);
-               }
-            }else{
-                if ($request->sheet_sum == "summary-page") {
-                    $sales = $query->take(25)->get();
-                    $limit = $query->paginate(25);
-                    $ex = $expense->take(25)->get();
-                    $exlimit = $expense->paginate(25);
-               }else{
-                    $sales = $query->where('spreadsheet_id', '=', $request->spreadsheet_id)->take(25)->get();
-                    $limit = $query->where('spreadsheet_id', '=', $request->spreadsheet_id)->paginate(25);
-                    $ex = $expense->where('spreadsheet_id', '=', $request->spreadsheet_id)->take(25)->get();
-                    $exlimit = $expense->where('spreadsheet_id', '=', $request->spreadsheet_id)->paginate(25);
-               }
-            }
+            $expenses = Expense::where('user_id', '=', Auth::id())
+            ->whereBetween('date',[$request->start_date, $request->end_date])
+            ->orderBy($request->sort,$request->sort_order)
+            ->where('name','LIKE',"%{$request->name}%")
+            ->when($request->spreadsheet_id != "summary", function($q){$q->where('spreadsheet_id', request('spreadsheet_id'));})
+            ->when(user_is_subscribed() == false, function($q){$q->take(25);})
+            ->get();
 
             $array = array(
                 'sales'=>$sales,
-                'limit'=>$limit,
-                'expense'=>$ex,
-                'exlimit'=>$exlimit
+                'expense'=>$expenses
             );
 
             $sku=str_replace([' ',':'],'-',Carbon::now()->addDays(1)->format('d-m H:i:s:u'));
@@ -654,7 +552,7 @@ class SpreadsheetController extends Controller
             fputcsv($fp,$columns);
 
             foreach ($array['sales'] as $key => $value) {
-                $columns = array($value->sale_date,$value->platform,$value->currency,$value->quantity,$value->name,$value->sold_price,$value->item_cost,$value->shipping_charge,$value->shipping_cost,$value->fees,$value->other_fees,$value->processing_fees,$value->tax,$value->profit);
+                $columns = array($value->date,$value->platform,$value->currency,$value->quantity,$value->name,$value->sold_price,$value->item_cost,$value->shipping_charge,$value->shipping_cost,$value->fees,$value->other_fees,$value->processing_fees,$value->tax,$value->profit);
                 fputcsv($fp,$columns);
             }
 

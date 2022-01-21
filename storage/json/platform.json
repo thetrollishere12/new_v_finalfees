@@ -1,0 +1,1268 @@
+
+  {
+		"amazon" : {
+			"fees" :{
+				"minimum":0.99,
+				"fee_type":{
+
+					"product_type":{
+						"type":"list",
+						"name":"Product Fee",
+						"list":
+						{
+							"device_accessories":{
+								"type":"flat",
+								"name":"Amazon Device Accessories",
+								"amount":45
+							},
+							"baby_product":{
+								"type":"flat",
+								"name":"Baby Products(excluding Baby Apparel)",
+								"amount":15
+							},
+							"books":{
+								"type":"flat",
+								"name":"Books",
+								"amount":15
+							},
+							"camera_photo":{
+								"type":"flat",
+								"name":"Camera and Photo",
+								"amount":8
+							},
+							"cell_phone":
+							{
+								"type":"flat",
+								"name":"Cell Phone Devices",
+								"amount":8
+							},
+							"consumer_electronics":{
+								"type":"flat",
+								"name":"Consumer Electronics",
+								"amount":8
+							},
+							"dvd":{
+								"type":"flat",
+								"name":"DVD",
+								"amount":15
+							},
+							"elec_accessories":{
+								"type":"flat",
+								"name":"Electronics Accessories",
+								"amount":15
+							},
+							"furniture_decor":{
+								"type":"flat",
+								"name":"Furniture & Decor",
+								"amount":15
+							}
+							,
+							"home_garden":{
+								"type":"flat",
+								"name":"Home & Garden(including Pet Supplies)",
+								"amount":15
+							}
+							,
+							"Kitchen":{
+								"type":"flat",
+								"name":"Kitchen",
+								"amount":15
+							}
+							,
+							"major_appliance":{
+								"type":"flat",
+								"name":"Major Appliances",
+								"amount":15
+							},
+							"music":{
+								"type":"flat",
+								"name":"Music",
+								"amount":15
+							},
+							"musical_instruments":{
+								"type":"flat",
+								"name":"Musical Instruments",
+								"amount":15
+							},
+							"office_products":{
+								"type":"flat",
+								"name":"Office Products",
+								"amount":15
+							},
+							"outdoors":{
+								"type":"flat",
+								"name":"Outdoors",
+								"amount":15
+							},
+							"personal_computer":{
+								"type":"flat",
+								"name":"Personal Computers",
+								"amount":6
+							},
+							"software_computer_games":{
+								"type":"flat",
+								"name":"Software & Computer/Video Games",
+								"amount":15
+							},
+							"sports_collection":{
+								"type":"flat",
+								"name":"Sports(excluding Sports Collectibles)",
+								"amount":15
+							},
+							"tool_home":{
+								"type":"flat",
+								"name":"Tools & Home Improvement",
+								"amount":15
+							},
+							"tool_home_improvement":{
+								"type":"flat",
+								"name":"Tools & Home Improvement(Base Equipment Power Tools)",
+								"amount":12
+							},
+							"toys_gamems":{
+								"type":"flat",
+								"name":"Toys & Games",
+								"amount":15
+							},
+							"unlocked_cell_phones":{
+								"type":"flat",
+								"name":"Unlocked Cell Phones",
+								"amount":8
+							},
+							"video_dvd":{
+								"type":"flat",
+								"name":"Video & DVD",
+								"amount":15
+							},
+							"video_game_consoles":{
+								"type":"flat",
+								"name":"Video Games Consoles",
+								"amount":8
+							},
+							"everything_else":{
+								"type":"flat",
+								"name":"Everything Else",
+								"amount":15
+							},
+							"three_d_printed":{
+								"type":"flat",
+								"name":"3D Printed Products",
+								"amount":12
+							},
+							"auto_powersport":{
+								"type":"flat",
+								"name":"Automotive & Powersports",
+								"amount":12
+							},
+							"auto_powersport_tires":{
+								"type":"flat",
+								"name":"Automotive & Powersports(Tires & Wheel Products)",
+								"amount":10
+							},
+							"beauty":{
+								"type":"flat",
+								"name":"Beauty",
+								"amount":15
+							},
+							"clothing_accessories":{
+								"type":"flat",
+								"name":"Clothing & Accessories",
+								"amount":17
+							},
+							"collectible_books":{
+								"type":"flat",
+								"name":"Collectible Books",
+								"amount":15
+							},
+							"collectible_coins":{
+								"type":"flat",
+								"name":"Collectible Coins",
+								"amount":15
+							},
+							"entertainment_collectibles":{
+								"type":"flat",
+								"name":"Entertainment Collectibles",
+								"amount":20
+							},
+							"fine_art":{
+								"type":"flat",
+								"name":"Fine Art",
+								"amount":20
+							},
+							"gift_cards":{
+								"type":"flat",
+								"name":"Gift Cards",
+								"amount":20
+							},
+							"grocery_gourmet":{
+								"type":"flat",
+								"name":"Grocery & Gourmet Food",
+								"amount":15
+							},
+							"health_personal":{
+								"type":"flat",
+								"name":"Health & Personal Care (including Personal Care Appliances)",
+								"amount":15
+							},
+							"industrial_scientific":{
+								"type":"flat",
+								"name":"Industrial & Scientific (including Food Service and Janitorial & Sanitation)",
+								"amount":12
+							},
+							"jewelry":{
+								"type":"flat",
+								"name":"Jewelry",
+								"amount":20
+							},
+							"luggage":{
+								"type":"flat",
+								"name":"Luggage & Travel Accessories",
+								"amount":15
+							},
+							"shoes_handbag":{
+								"type":"flat",
+								"name":"Shoes, Handbags & Sunglasses",
+								"amount":0
+							},
+							"sports_collection":{
+								"type":"flat",
+								"name":"Sports Collectibles",
+								"amount":20
+							},
+							"watches":{
+								"type":"flat",
+								"name":"Watches",
+								"amount":0
+							}
+						}	
+					}
+				}
+			},
+			"color":"#f99a36"
+		},
+		"bonanza" : {
+		  "fees" :{
+		  	"minimum":0.50,
+				"fee_type":{
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+							"max":500
+						},
+						"name":"Platform Fee",
+						"amount":3.5
+					},
+					"advertising_listing":{
+						"type":"list",
+						"name":"Advertising",
+						"list":
+						{
+							"economy":{
+								"type":"percentage",
+								"name":"economy",
+								"amount":3.5
+							},
+							"basic":{
+								"type":"percentage",
+								"name":"basic",
+								"amount":9
+							},
+							"superior":{
+								"type":"percentage",
+								"name":"superior",
+								"amount":19
+							},
+							"elite":{
+								"type":"percentage",
+								"name":"elite",
+								"amount":30
+							}
+						}	
+					}
+				}
+			},
+		  "color":"#647948"
+		},
+		"chairish" : {
+		  "color":"#cc4639"
+		},
+		"craigslist" : {
+		  "color":"#551a8b"
+		},
+		"depop" : {
+		  "fees" :{
+		  	"minimum":0,
+				"fee_type":{
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+
+						},
+						"name":"Platform Fee",
+						"amount":10
+					}
+
+				}
+			},
+		  "color":"#ff2300"
+		},
+		"ebay" : {
+		  "fees" :{
+		  	"minimum":0,
+				"fee_type":{
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+
+						},
+						"name":"Ebay Fees",
+						"amount":10
+					},
+					"insertion_fee":{
+						"type":"flat",
+						"name":"Insertion Fees",
+						"amount":0.30
+					},
+
+					"category_fees":{
+						"type":"list",
+						"name":"category",
+						"list":
+						{
+							"others":{
+								"type":"percentage",
+								"name":"Others",
+								"amount":9.15
+							},
+							"auto_tools_supplies_parts":{
+								"type":"percentage",
+								"name":"Automotive Tools, Supplies, Parts & Accessories",
+								"amount":8.15
+							},
+							"books_dvd_movies":{
+								"type":"percentage",
+								"name":"Books, DVDs & Movies, Music(Except Records Category)",
+								"amount":10.20
+							},
+							"coins_paper_money":{
+								"type":"percentage",
+								"name":"Coins & Paper Money and Stamps",
+								"amount":6.15
+							},
+							"computer_tablet_networking":{
+								"type":"percentage",
+								"name":"Computer/Tablets & Networking and Video Game Consoles",
+								"amount":4
+							},
+							"comsumer_electronics":{
+								"type":"percentage",
+								"name":"Consumer Electronics, Cameras and Photos",
+								"amount":6.15
+							},
+							"heavy_equipment":{
+								"type":"percentage",
+								"name":"Heavy Equipment and Concession Trailers & Carts",
+								"amount":4
+							},
+							"immaging_aesthetics":{
+								"type":"percentage",
+								"name":"Imaging & Aesthetics Equipment and Commercial Printing Presses",
+								"amount":4
+							},
+							"musical_instruments":{
+								"type":"percentage",
+								"name":"Musical Instrument & Gear",
+								"amount":7.15
+							}
+						}	
+					},
+
+					"listing_upgrade_fees":{
+						"type":"list",
+						"name":"Upgrade Fees",
+						"list":
+						{
+							"1_3_listing_cost":{
+								"type":"flat",
+								"name":"1-3 Day Listing",
+								"amount":1
+							},
+							"bold_cost":{
+								"type":"flat",
+								"name":"Bold",
+								"amount":2
+							},
+							"gallery_plus_cost":{
+								"type":"flat",
+								"name":"Gallery Plus",
+								"amount":0.35
+							},
+							"int_visibility_cost":{
+								"type":"flat",
+								"name":"Int Site Visibility",
+								"amount":0.10
+							},
+							"scheduled_listing_cost":
+							{
+								"type":"flat",
+								"name":"Scheduled Listing",
+								"amount":0.10
+							},
+							"listing_designer_cost":{
+								"type":"flat",
+								"name":"Listing Designer",
+								"amount":0.10
+							},
+							"subtitle_cost":{
+								"type":"flat",
+								"name":"Subtitle",
+								"amount":1
+							},
+							"value_pack_cost":{
+								"type":"flat",
+								"name":"Value Pack",
+								"amount":0.65
+							}
+						}	
+					}
+
+				}
+			},
+		  "color":"#86b817"
+		},
+
+		"ecrater" : {
+		  "fees" :{
+		  	"minimum":0,
+				"fee_type":{
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+
+						},
+						"amount":2.9,
+						"name":"Platform Fee"
+					}
+
+				}
+			},
+		  "color":"#cc4639"
+		},
+
+
+		"etsy" : {
+		  "fees" :{
+		  	"minimum":0,
+				"fee_type":{
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+
+						},
+						"amount":5,
+						"name":"Platform Fee"
+					},
+					"listing_fees":{
+						"type":"flat",
+						"min_max":{
+
+						},
+						"amount":0.20,
+						"name":"Listing Fee"
+					}
+
+				}
+			},
+		  "color":"#f26223"
+		},
+		"facebook" : {
+		  "fees" :{
+		  	"minimum":0.40,
+				"fee_type":{
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+							"min":0,
+							"max":8
+						},
+						"amount":5,
+						"name":"Platform Fee"
+					}
+
+				}
+			},
+		  "color":"#4267b2"
+		},
+		"fiverr" : {
+		  "fees" :{
+		  	"minimum":0,
+				"fee_type":{
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+
+						},
+						"amount":20,
+						"name":"Platform Fee"
+					}
+
+				}
+			},
+		  "color":"#1dbf73"
+		},
+		"goat" : {
+		  "fees" :{
+		  	"minimum":0,
+				"fee_type":{
+
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+
+						},
+						"amount":9.5,
+						"name":"Platform Fee"
+					},
+
+					"country_fees":{
+							"type":"list",
+							"name":"Country Fees",
+							"list":
+							{
+								"seller_united_states":{
+									"type":"percentage",
+									"name":"United States",
+									"amount":5
+								},
+								"seller_austria":{
+									"type":"percentage",
+									"name":"Austria",
+									"amount":20
+								},
+								"seller_belgium":{
+									"type":"percentage",
+									"name":"Belgium",
+									"amount":12
+								},
+								"seller_canada":{
+									"type":"percentage",
+									"name":"Canada",
+									"amount":20
+								},
+								"seller_china":
+								{
+									"type":"percentage",
+									"name":"China",
+									"amount":25
+								},
+								"seller_denmark":{
+									"type":"percentage",
+									"name":"Denmark",
+									"amount":20
+								},
+								"seller_finland":{
+									"type":"percentage",
+									"name":"Finland",
+									"amount":20
+								},
+								"seller_france":{
+									"type":"percentage",
+									"name":"France",
+									"amount":12
+								},
+								"seller_germany":{
+									"type":"percentage",
+									"name":"Germany",
+									"amount":5
+								}
+								,
+								"seller_guam":{
+									"type":"percentage",
+									"name":"Guam",
+									"amount":25
+								}
+								,
+								"seller_hong_kong":{
+									"type":"percentage",
+									"name":"Hong Kong",
+									"amount":15
+								}
+								,
+								"seller_ireland":{
+									"type":"percentage",
+									"name":"Ireland",
+									"amount":12
+								}
+								,
+								"seller_italy":{
+									"type":"percentage",
+									"name":"Italy",
+									"amount":20
+								}
+								,
+								"seller_luxembourg":{
+									"type":"percentage",
+									"name":"Luxembourg",
+									"amount":12
+								}
+								,
+								"seller_malaysia":{
+									"type":"percentage",
+									"name":"Malaysia",
+									"amount":20
+								}
+								,
+								"seller_netherlands":{
+									"type":"percentage",
+									"name":"Netherlands",
+									"amount":10
+								}
+								,
+								"seller_philippines":{
+									"type":"percentage",
+									"name":"Philippines",
+									"amount":20
+								}
+								,
+								"seller_portugal":{
+									"type":"percentage",
+									"name":"Portugal",
+									"amount":20
+								}
+								,
+								"seller_singapore":{
+									"type":"percentage",
+									"name":"Singapore",
+									"amount":20
+								}
+								,
+								"seller_spain":{
+									"type":"percentage",
+									"name":"Spain",
+									"amount":20
+								}
+								,
+								"seller_sweden":{
+									"type":"percentage",
+									"name":"Sweden",
+									"amount":10
+								}
+								,
+								"seller_united_kingdom":{
+									"type":"percentage",
+									"name":"United Kingdom",
+									"amount":5
+								}
+								,
+								"seller_other":{
+									"type":"percentage",
+									"name":"Others",
+									"amount":30
+								}
+							}	
+						}
+
+
+				}
+
+			},
+		  "color":"#000"
+		},
+		"grailed" : {
+		  "fees" :{
+		  	"minimum":0,
+				"fee_type":{
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+
+						},
+						"amount":9,
+						"name":"Platform Fee"
+					}
+
+				}
+			},
+		  "color":"#000"
+		},
+		"kijiji" : {
+		  "color":"#373373"
+		},
+		"letgo" : {
+		  "color":"#ff3f55"
+		},
+		"mercari" : {
+		  "fees" :{
+		  	"minimum":0,
+				"fee_type":{
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+
+						},
+						"amount":10,
+						"name":"Platform Fee"
+					},
+					"processing_fees":{
+						"type":"flat",
+						"min_max":{
+
+						},
+						"amount":2,
+						"name":"Processing Fee"
+					}
+
+				}
+			},
+		  "color":"#6879ff"
+		},
+		"newegg" : {
+		  "fees" :{
+		  	"minimum":0,
+				"fee_type":{
+
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+
+						},
+						"amount":9.5,
+						"name":"Platform Fee"
+					},
+
+					"membership_fees":{
+							"type":"list",
+							"name":"membership",
+							"list":
+							{
+								"standard":{
+									"type":"percentage",
+									"name":"Standard",
+									"amount":0
+								},
+								"professional":{
+									"type":"percentag",
+									"name":"Professional",
+									"amount":29.95
+								},
+								"enterprise":{
+									"type":"percentag",
+									"name":"Enterprise",
+									"amount":99.95
+								}
+			
+						}
+					},
+
+					"country_fees":{
+							"type":"list",
+							"name":"Country Fees",
+							"list":
+							{
+
+								"apparel_accessories":{
+									"type":"percentage",
+									"name":"Apparel & Accessories",
+									"amount":14
+								},
+								"appliances":{
+									"type":"percentage",
+									"name":"Appliances",
+									"amount":12
+								},
+								"arts_crafts":{
+									"type":"percentage",
+									"name":"Arts & Crafts",
+									"amount":13
+								},
+								"auto_hardware":{
+									"type":"percentage",
+									"name":"Auto & Hardware",
+									"amount":10
+								},
+								"baby":{
+									"type":"percentage",
+									"name":"Baby",
+									"amount":12
+								},
+								"bags_luggage":{
+									"type":"percentage",
+									"name":"Bags & Luggage",
+									"amount":14
+								},
+								"beauty":{
+									"type":"percentage",
+									"name":"Beauty",
+									"amount":12
+								},
+								"books_media_entertainment":{
+									"type":"percentage",
+									"name":"Books, Media & Entertainment",
+									"amount":13
+								},
+								"camera_photo":{
+									"type":"percentage",
+									"name":"Camera & Photo",
+									"amount":9
+								},
+								"cell_phone_accessories":{
+									"type":"percentage",
+									"name":"Books, Media & Entertainment",
+									"amount":13
+								}
+								,
+								"cell_phones":{
+									"type":"percentage",
+									"name":"Cell Phones",
+									"amount":8
+								}
+								,
+								"computer_hardware":{
+									"type":"percentage",
+									"name":"Computer Hardware",
+									"amount":10
+								}
+								,
+								"consumer_electronics":{
+									"type":"percentage",
+									"name":"Consumer Electronics",
+									"amount":9
+								}
+								,
+								"dvd_videos":{
+									"type":"percentage",
+									"name":"DVD & Videos",
+									"amount":10
+								}
+								,
+								"food_beverage":{
+									"type":"percentage",
+									"name":"Food & Beverage",
+									"amount":15
+								}
+								,
+								"health_personal_care":{
+									"type":"percentage",
+									"name":"Health & Personal care",
+									"amount":12
+								}
+								,
+								"home_living":{
+									"type":"percentage",
+									"name":"Home & Living",
+									"amount":12
+								}
+								,
+								"home_improvement":{
+									"type":"percentage",
+									"name":"Home Improvement",
+									"amount":12
+								}
+								,
+								"motorcycles_powersports":{
+									"type":"percentage",
+									"name":"Motorcycles & Powersports",
+									"amount":10
+								}
+								,
+								"musical_instruments":{
+									"type":"percentage",
+									"name":"Musical Instruments",
+									"amount":10
+								}
+								,
+								"office_supplies":{
+									"type":"percentage",
+									"name":"Office Supplies",
+									"amount":13
+								}
+								,
+								"outdoor_garden":{
+									"type":"percentage",
+									"name":"Outdoor & Garden",
+									"amount":12
+								}
+								,
+								"pet_supplies":{
+									"type":"percentage",
+									"name":"Pet Supplies",
+									"amount":11
+								}
+								,
+								"software":{
+									"type":"percentage",
+									"name":"Software",
+									"amount":15
+								}
+								,
+								"sporting_goods":{
+									"type":"percentage",
+									"name":"Sporting Goods",
+									"amount":12
+								}
+								,
+								"toys_games_hobbies":{
+									"type":"percentage",
+									"name":"Toys Games & Hobbies",
+									"amount":12
+								}
+								,
+								"video_game_consoles":{
+									"type":"percentage",
+									"name":"Video Game Consoles",
+									"amount":8
+								}
+								,
+								"warranty_service":{
+									"type":"percentage",
+									"name":"Warranty & Service",
+									"amount":13
+								}
+								,
+								"watches":{
+									"type":"percentage",
+									"name":"Watches",
+									"amount":12
+								}
+								,
+								"other":{
+									"type":"percentage",
+									"name":"Other",
+									"amount":13
+								}
+							
+							}	
+						}
+
+
+				}
+
+			},
+		  "color":"linear-gradient(140deg,#052d69,#052d69 30%,#f68a28)"
+		},
+		"offerup" : {
+		  "fees" :{
+		  	"minimum":1.99,
+				"fee_type":{
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+
+						},
+						"amount":12.9,
+						"name":"Platform Fee"
+					}
+
+				}
+			},
+		  "color":"linear-gradient(90deg,#00ab80,#00a980 50%,#026d6d)"
+		},
+		"paypal" : {
+		  "platform_fees" :10,
+		  "color":"#029bdd"
+		},
+		"poshmark" : {
+		  "fees" :{
+		  	"minimum":2.95,
+				"fee_type":{
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+							"min":20
+						},
+						"amount":20,
+						"name":"Platform Fee"
+					},
+					"processing_fees":{
+						"type":"flat",
+						"min_max":{
+
+						},
+						"amount":2,
+						"name":"Processing Fee"
+					}
+
+				}
+			},
+		  "color":"#64363d"
+		},
+		"rakuten" : {
+		  "fees" :{
+		  	"minimum":0,
+		  	"fee_type":{
+
+			  	"platform_flat_fees":{
+			  		"type":"flat",
+			  		"min_max":{
+
+			  		},
+			  		"amount":0.99,
+			  		"name":"Platform Flat Fees"
+			  	},
+					
+			  	"category_fees":{
+							"type":"list",
+							"name":"Category Fees",
+							"list":
+							{
+
+								"automotive_parts":{
+									"type":"flat",
+									"name":"Automotive & Parts",
+									"amount":12
+								},
+								"bags_luggage":{
+									"type":"flat",
+									"name":"Bags & Luggage",
+									"amount":15
+								},
+								"beauty_personal_care":{
+									"type":"flat",
+									"name":"Beauty & Personal Care",
+									"amount":15
+								},
+								"clothing_shoes_accessories":{
+									"type":"flat",
+									"name":"Clothing, Shoes & Accessories",
+									"amount":15
+								},
+								"c_s_a_f_a":{
+									"type":"flat",
+									"name":"Clothing, Shoes & Accessories > Fashion Accessories",
+									"amount":15
+								},
+								"c_s_a_j_w":{
+									"type":"flat",
+									"name":"Clothing, Shoes & Accessories > Jewelry & Watches",
+									"amount":15
+								},
+								"c_s_s_a_s":{
+									"type":"flat",
+									"name":"Clothing, Shoes & Accessories > Shoes",
+									"amount":15
+								},
+								"electronics":{
+									"type":"flat",
+									"name":"Electronics",
+									"amount":8
+								},
+								"electronic_computeres":{
+									"type":"flat",
+									"name":"Electronics > Computers",
+									"amount":8
+								},
+								"electronic_software":{
+									"type":"flat",
+									"name":"Electronics > Software",
+									"amount":10
+								},
+								"electronic_video_game":{
+									"type":"flat",
+									"name":"Electronics > Video Games",
+									"amount":10
+								},
+								"food_beverage":{
+									"type":"flat",
+									"name":"Food & Beverage",
+									"amount":15
+								},
+								"health":{
+									"type":"flat",
+									"name":"Health",
+									"amount":15
+								},
+								"home_outdoor":{
+									"type":"flat",
+									"name":"Home & Outdoor",
+									"amount":15
+								},
+								"home_outdoor_appliances":{
+									"type":"flat",
+									"name":"Home & Outdoor > Appliances",
+									"amount":10
+								},
+								"home_outdoor_hobbies":{
+									"type":"flat",
+									"name":"Home & Outdoor > Hobbies",
+									"amount":15
+								},
+								"home_hobbies_instruments":{
+									"type":"flat",
+									"name":"Home & Outdoor > Hobbies > Musical Instruments",
+									"amount":12
+								},
+								"media":{
+									"type":"flat",
+									"name":"Media",
+									"amount":15
+								},
+								"media_movies_tv":{
+									"type":"flat",
+									"name":"Media > Movies & TV",
+									"amount":15
+								},
+								"media_music":{
+									"type":"flat",
+									"name":"Media > Music",
+									"amount":15
+								},
+								"office_supplies":{
+									"type":"flat",
+									"name":"Office Supplies",
+									"amount":12
+								},
+								"pet_supplies":{
+									"type":"flat",
+									"name":"Pet Supplies",
+									"amount":15
+								},
+								"sports_fitness":{
+									"type":"flat",
+									"name":"Sports & Fitness",
+									"amount":15
+								},
+								"toddler_baby":{
+									"type":"flat",
+									"name":"Toys, Toddlers & Baby",
+									"amount":12
+								},
+								"warranty":{
+									"type":"flat",
+									"name":"Warranties",
+									"amount":15
+								},
+								"everything_else":{
+									"type":"flat",
+									"name":"Everything Else",
+									"amount":15
+								}
+								
+							
+							}	
+						}
+
+		  	}
+
+			},
+		  "color":"#5b5ac0"
+		},
+		"rubylane" : {
+		  "fees" :{
+		  	"minimum":0,
+				"fee_type":{
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+						},
+						"amount":6.7,
+						"name":"Platform Fee"
+					}
+
+				}
+			},
+		  "color":"#ca3625"
+		},
+		"stockx" : {
+		  "fees" :{
+		  	"minimum":0,
+				"fee_type":{
+
+					"processing_fees":{
+						"type":"percentage",
+						"min_max":{
+						},
+						"amount":3,
+						"name":"Processing Fees"
+					},
+					"seller_level":{
+							"type":"list",
+							"name":"Seller Level",
+							"list":
+							{
+
+								"level_1":{
+									"type":"percentage",
+									"name":"Level 1",
+									"amount":9.5
+								},
+								"level_2":{
+									"type":"percentage",
+									"name":"Level 2",
+									"amount":9
+								},
+								"level_3":{
+									"type":"percentage",
+									"name":"Level 3",
+									"amount":8.5
+								},
+								"level_4":{
+									"type":"percentage",
+									"name":"Level 4",
+									"amount":8
+								}
+								
+							}	
+						}
+
+				}
+			},
+		  "color":"#40af49"
+		},
+		"stripe" : {
+		  "fees" :{
+		  	"minimum":0,
+				"fee_type":{
+
+					"transaction_fees":{
+						"type":"percentage",
+						"min_max":{
+						},
+						"amount":2.9,
+						"name":"Transaction Fee"
+					},
+					"transaction_flat_fees":{
+						"type":"flat",
+						"min_max":{
+						},
+						"amount":0.30,
+						"name":"Transaction Flat Fee"
+					}
+
+				}
+			},
+		  "color":"#6772e5"
+		},
+		"tradesy" : {
+		  
+			"fees" :{
+		  	"minimum":7.50,
+				"fee_type":{
+
+					"platform_fees":{
+						"type":"percentage",
+						"min_max":{
+							"min":50
+						},
+						"amount":19.80,
+						"name":"Platform Fees"
+					}
+
+				}
+			},
+		  "color":"#000"
+		}
+	}

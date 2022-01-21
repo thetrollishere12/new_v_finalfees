@@ -448,18 +448,6 @@ ul button {
     vertical-align: middle
 }
 
-.popup_status {
-    position: fixed;
-    top: 80%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    display: none;
-    color: #fff;
-    padding: .5rem 20px !important;
-    width: 200px
-}
-
 .reset_filter {
     background: #3490dc;
     color: #fff;

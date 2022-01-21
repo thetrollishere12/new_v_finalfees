@@ -21,7 +21,7 @@ class CreateSalesTable extends Migration
 
             $table->integer('user_id');
             $table->string('spreadsheet_id');
-            $table->date('sale_date')->nullable();
+            $table->date('date')->nullable();
             $table->string('platform');
             $table->string('currency');
 

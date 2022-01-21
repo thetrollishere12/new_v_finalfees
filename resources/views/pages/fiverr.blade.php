@@ -1,9 +1,4 @@
-@extends('layouts.app')
-
-@section('others')
-	<script type="text/javascript" src="js/general.js"></script>
-	<script type="text/javascript" src="js/countUp.js"></script>
-@endsection
+@extends('layouts.platform')
 
 @section('description')
 Calculate your Fiverr Fee, Paypal fees and profits with our Fiverr spreadsheet & fee calculator. Free Spreadsheet to record all of your sales.
@@ -16,8 +11,8 @@ Fiverr Fee Calculator. Calculate Your Paypal Fee & Fiverr Fees.
 @section('content')
 <div id="main-calculator">
 	<div class="main-container">
-    	<h1>FIVERR FEE CALCULATOR</h1>
-		<div class="fiverr-inner">
+    	<h1 style="background:{{ $json['color']  }}">FIVERR FEE CALCULATOR</h1>
+		<div class="p-6">
 			@include('pg_widget.name_date')
 			<div class="input-container">
 				<div class="label">
@@ -41,14 +36,13 @@ Fiverr Fee Calculator. Calculate Your Paypal Fee & Fiverr Fees.
 				@include('inc.paypal_slide')
 				@include('pg_widget.profit')
 				@include('pg_widget.add_to_sheet')
-				@include('pg_widget.premium')
 			</div>
 			@include('inc.ad')
 		</div>	    	
 	</div>
 	<div class="details-container">
 		<div class="about-container">
-			<h2>ABOUT FIVERR FEES</h2>
+			<h2 style="background:{{ $json['color']  }}">ABOUT FIVERR FEES</h2>
 			<p>Fiverr is an online marketplace where freelancers offer services to customers worldwide. Each transaction Fiverr takes a fee of 20% of the total amount freelancers earn plus <a href="{{url('/paypal')}}">Paypal fees</a>.</p>
 		</div>
 		@include('inc.graph')

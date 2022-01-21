@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use App\Models\EtsyAccount;
 use Carbon\Carbon;
@@ -13,20 +12,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Spreadsheet;
 use App\Models\Sale;
 
-
-
 use Illuminate\Support\Str;
 
-
-// Might delete
-use Gentor\Etsy\Facades\Etsy;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Subscriber\Oauth\Oauth1;
-use Exception;
-// 
-
 class EtsyController extends Controller {
-
 
 	public static function token_refresh($shop_id){
 
@@ -34,19 +22,11 @@ class EtsyController extends Controller {
 
 		if ($account->count() > 0) {
 
-			$client = new Client();
-
-	        $response = $client->request(
-	            'POST', /*instead of POST, you can use GET, PUT, DELETE, etc*/
-	            'https://api.etsy.com/v3/public/oauth/token',
-	            [
-	                'form_params' => [
-	                	'grant_type'=>'refresh_token',
-	                	'client_id'=>env('ETSY_KEYSTRING'),
-	                	'refresh_token'=>$account->refresh_token
-	                ],
-	            ] 
-	        );
+	        $response = Http::asForm()->post('https://api.etsy.com/v3/public/oauth/token',[
+	        	'grant_type'=>'refresh_token',
+	            'client_id'=>env('ETSY_KEYSTRING'),
+	            'refresh_token'=>$account->refresh_token
+	        ]);
 
 	        $new_oauth = json_decode($response->getBody());
 
@@ -87,24 +67,13 @@ class EtsyController extends Controller {
 
         try{
 
-	        $client = new Client();
-
-	        $response = $client->request(
-	            'POST', /*instead of POST, you can use GET, PUT, DELETE, etc*/
-	            'https://api.etsy.com/v3/public/oauth/token',
-	            [
-	                'form_params' => [
-
-	                	'grant_type'=>'authorization_code',
-	                	'client_id'=>env('ETSY_KEYSTRING'),
-	                	'redirect_uri'=>env('ETSY_CALLBACK_URI'),
-	                	'code'=>$request->code,
-	                	'code_verifier'=>session('code_verifier')
-
-	                ],
-	            ] 
-	        );
-
+	        $response = Http::asForm()->post('https://api.etsy.com/v3/public/oauth/token',[
+	        	'grant_type'=>'authorization_code',
+            	'client_id'=>env('ETSY_KEYSTRING'),
+            	'redirect_uri'=>env('ETSY_CALLBACK_URI'),
+            	'code'=>$request->code,
+            	'code_verifier'=>session('code_verifier')
+	        ]);
 
 	        $oauth = json_decode($response->getBody());
 
@@ -114,32 +83,14 @@ class EtsyController extends Controller {
 
 	        	// Get SHOP DETAILS
 
-		        $response = $client->request(
-		            'GET', /*instead of POST, you can use GET, PUT, DELETE, etc*/
-		            'https://openapi.etsy.com/v3/application/users/'.$id.'/shops',
-		            [
-		                'headers' => [
-		                	'x-api-key'=>env('ETSY_KEYSTRING'),
-		                ],
-		            ] 
-		        );
+		        $decode = etsy_get_shop_by_userid($id);
 
 		        // GET SHOP NAME, SHOP ID, URL, ICON, TRANSACTION SOLD, CURRENCY, COUNTRY
-		        $decode = json_decode($response->getBody());
 
-		        $user_email = $response = $client->request(
-		            'GET', /*instead of POST, you can use GET, PUT, DELETE, etc*/
-		            'https://openapi.etsy.com/v3/application/users/'.$decode->user_id,
-		            [
-		                'headers' => [
-		                	'x-api-key'=>env('ETSY_KEYSTRING'),
-		                	'authorization'=>'Bearer '.$oauth->access_token
-		                ],
-		            ] 
-		        );
+		        $user_email = etsy_get_user($oauth->access_token,$decode->user_id);
 
 		        $account = new EtsyAccount;
-		        $account->etsy_email = json_decode($user_email->getBody())->primary_email;
+		        $account->etsy_email = $user_email->primary_email;
 		        $account->parent_email = auth()->user()->email;
 		        $account->bearer_token = $oauth->access_token;
 		        $account->refresh_token = $oauth->refresh_token;
@@ -158,7 +109,7 @@ class EtsyController extends Controller {
 			}
 
         }catch(\Exception $e){
-			return $e;
+
             return redirect(url('user/seller/payment-method'))->with('error','There was an Paypal error. Please try again.');
 
         }
@@ -177,7 +128,7 @@ class EtsyController extends Controller {
 
 	public function sold(Request $req,$shop_id){
 
-		$limit = 50;
+		$limit = 5;
 
 		if (!isset($req->page)OR $req->page == 0){$req->page = 1;}
 
@@ -190,49 +141,19 @@ class EtsyController extends Controller {
 
 		$listings = [];
 
-		$client = new Client();
-
-		$response = $client->request(
-            'GET', /*instead of POST, you can use GET, PUT, DELETE, etc*/
-            'https://openapi.etsy.com/v3/application/shops/'.$etsy_account->etsy_shop_id.'/receipts?limit='.$limit."&offset=".$page,
-            [
-                'headers' => [
-                	'x-api-key'=>env('ETSY_KEYSTRING'),
-                	'authorization'=>'Bearer '.$new_bearer_token
-                ],
-            ] 
-        );
-
-        $solds = json_decode($response->getBody());
+		$solds = etsy_receipt($new_bearer_token,$etsy_account->etsy_shop_id,'','',$limit,$page);
 
         foreach($solds->results as $sold){
 
-        	$response = $client->request(
-	            'GET', /*instead of POST, you can use GET, PUT, DELETE, etc*/
-	            'https://openapi.etsy.com/v3/application/shops/'.$etsy_account->etsy_shop_id.'/receipts/'.$sold->receipt_id.'/payments',
-	            [
-	                'headers' => [
-	                	'x-api-key'=>env('ETSY_KEYSTRING'),
-	                	'authorization'=>'Bearer '.$new_bearer_token
-	                ],
-	            ] 
-	        );
+        	$response = etsy_receipt_by_id($new_bearer_token,$etsy_account->etsy_shop_id,$sold->receipt_id);
 
         	foreach ($sold->transactions as $i => $transaction) {
         		
         		try{
 
-		        	$response_img = $client->request(
-			            'GET', /*instead of POST, you can use GET, PUT, DELETE, etc*/
-			            'https://openapi.etsy.com/v3/application/shops/'.$etsy_account->etsy_shop_id.'/listings/'.$transaction->listing_id.'/images/'.$transaction->listing_image_id,
-			            [
-			                'headers' => [
-			                	'x-api-key'=>env('ETSY_KEYSTRING')
-			                ],
-			            ] 
-			        );
+		        	$response_img = etsy_get_listings_image_by_image_id($etsy_account->etsy_shop_id,$transaction->listing_id,$transaction->listing_image_id); 
 
-		        	$sold->transactions[$i]->image = json_decode($response_img->getBody())->url_75x75;
+		        	$sold->transactions[$i]->image = $response_img->url_75x75;
 
 	        	}catch(\Exception $e){
 	        		continue;
@@ -242,7 +163,7 @@ class EtsyController extends Controller {
 
         	$listings[] = [
         		"receipt"=>$sold,
-        		"payments"=>json_decode($response->getBody())->results[0]
+        		"payments"=>$response->results[0]
         	];
 
         }
@@ -268,7 +189,7 @@ class EtsyController extends Controller {
 
         	$count = Spreadsheet::where('user_id', '=', Auth::id())->where('spreadsheet_id', '=', $spreadsheet_id)->count();
 
-            $sales_count = DB::table('sales')->where('user_id', '=', Auth::id())->count();
+            $sales_count = Sale::where('user_id', '=', Auth::id())->count();
 
         }
       
@@ -295,13 +216,11 @@ class EtsyController extends Controller {
                     $sale->tax = ($listing['tax']) ? $listing['tax'] : 0;
                     $sale->profit = ($listing['profit']) ? $listing['profit'] : 0;
     
-                    if (Auth::user()->subscribed('main')) {
+                    if (user_is_subscribed()) {
                         $sale->save();
-                        return response()->json(['status'=>'valid','message'=>'Added To Spreadsheet','color'=>'#d4edda','text'=>'#262626']);
                     } else{
                         if ($sales_count < 25) {
                             $sale->save();
-                            return response()->json(['status'=>'valid','message'=>'Added To Spreadsheet','color'=>'#d4edda','text'=>'#262626']);
                         }else{
                             return response()->json(['status'=>'upgrade','message'=>'<a class="upgrade_acc" href="subscription">Please Upgrade Account</a>','color'=>'#ea3f4f','text'=>'white']);
                         }
@@ -316,43 +235,161 @@ class EtsyController extends Controller {
 	    
 	}
 
-	public function delete_acc_etsy(Request $req) {
-		$id = $req->acc_id;
-		EtsyAccount::where('id', '=', $id)->delete();
-		return redirect('auto/etsy');
+
+	public function active(Request $req,$shop_id){
+
+		$limit = 5;
+
+		if (!isset($req->page)OR $req->page == 0){$req->page = 1;}
+
+		$page = ($req->page-1)*$limit;
+
+
+		$etsy_account = EtsyAccount::where('parent_email', '=', auth()->user()->email)->where('etsy_shop_id',$shop_id)->get()->first();
+
+		$new_bearer_token = $this->token_refresh($shop_id);
+
+		$listings = [];
+
+        $active = etsy_get_listings_by_shop($new_bearer_token,$etsy_account->etsy_shop_id,'active',$limit,0,"created","desc");
+
+        foreach ($active->results as $i => $listing) {
+    		
+    		try{
+
+	        	$response_img = etsy_get_listings_image_by_id($etsy_account->etsy_shop_id,$listing->listing_id);
+
+	        	$active->results[$i]->image = $response_img->results[0]->url_75x75;
+
+        	}catch(\Exception $e){
+        		continue;
+        	}
+
+    	}
+
+        $pagination = [
+    		'current_page'=>$req->page,
+    		'total_page' => $active->count/$limit
+    	];
+
+        return view('auto.etsy.active',['listings'=>$active->results,'listing_count'=>$active->count,'pagination'=>$pagination,'o'=>0]);
+
 	}
 
 
+	public function summary(Request $req,$shop_id){
+
+		$limit = 100;
+
+		if (!isset($req->page)OR $req->page == 0){$req->page = 1;}
+
+		$page = ($req->page-1)*$limit;
 
 
+		$etsy_account = EtsyAccount::where('parent_email', '=', auth()->user()->email)->where('etsy_shop_id',$shop_id)->get()->first();
+
+		$new_bearer_token = $this->token_refresh($shop_id);
+
+		$listings = [];
+
+		$solds = etsy_receipt($new_bearer_token,$etsy_account->etsy_shop_id,1580515200,1583107200,$limit,$page);
+
+        $response_page = ceil($solds->count/$limit);
+
+        $ledger = [];
+        $ledger['sale_fee'] = 0;
+        $ledger['grandtotal'] = 0;
+        $ledger['tax'] = 0;
 
 
+        $ledger['PAYMENT'] = 0;
+        $ledger['REFUND'] = 0;
+        $ledger['shipping_labels'] = 0;
+        $ledger['transaction_quantity'] = 0;
+        $ledger['renew_sold_auto'] = 0;
+        $ledger['renew_expired'] = 0;
+        $ledger['listing_refund'] = 0;
+        $ledger['offsite_ads_fee'] = 0;
+        $ledger['offsite_ads_fee_refund'] = 0;
+        $ledger['transaction_refund'] = 0;
+        $ledger['transaction'] = 0;
+
+        $client = new Client();
+
+        foreach($solds->results as $i => $sold){
+
+        	$response = etsy_receipt_by_id($new_bearer_token,$shop_id,$sold->receipt_id);
+
+        	$solds->results[$i]->amount_fees = $response->results[0]->amount_fees;
+
+    		$ledger['sale_fee'] += $sold->amount_fees->amount/100;
+    		$ledger['grandtotal'] += $sold->grandtotal->amount/100;
+    		$ledger['tax'] += $sold->total_tax_cost->amount/100;
+
+        }
+        
+        for ($o=1; $o < $response_page; $o++) { 
+
+			$client = new Client();
+
+			$ledger_entry = etsy_receipt($new_bearer_token,$etsy_account->etsy_shop_id,1580515200,1583107200,$limit,$o*100);
 
 
+		    foreach($ledger_entry->results as $i => $sold){
+
+				$response = etsy_receipt_by_id($new_bearer_token,$shop_id,$sold->receipt_id);
+
+		    	$solds->results[$i]->amount_fees = $response->results[0]->amount_fees;
+
+				$ledger['sale_fee'] += $sold->amount_fees->amount/100;
+
+				$ledger['net'] += ($sold->grandtotal->amount/100)-($sold->total_tax_cost->amount/100)-($sold->amount_fees->amount/100);
+	        	
+	        }
+
+		}
+
+		$ledger_entry= etsy_ledger_entry($new_bearer_token,$etsy_account->etsy_shop_id,1580515200,1583107200,$limit,$page);
+
+		$response_page = ceil($ledger_entry->count/$limit);
+
+		foreach($ledger_entry->results as $i => $sold){
+
+			if(isset($ledger[$sold->ledger_type])) {
+            	$ledger[$sold->ledger_type] +=  $sold->amount/100;
+	        } else {
+	            $ledger[$sold->ledger_type] =  $sold->amount/100;
+	        }
+        	
+        }
+
+		for ($o=1; $o < $response_page; $o++) { 
+
+			$client = new Client();
+
+			$ledger_entry = etsy_ledger_entry($new_bearer_token,$etsy_account->etsy_shop_id,1580515200,1583107200,$limit,$o*100);
+
+		    foreach($ledger_entry->results as $i => $sold){
+
+				if(isset($ledger[$sold->ledger_type])) {
+	            	$ledger[$sold->ledger_type] +=  $sold->amount/100;
+		        } else {
+		            $ledger[$sold->ledger_type] =  $sold->amount/100;
+		        }
+	        	
+	        }
+
+		}
+
+        return view('auto.etsy.summary',['account'=>$etsy_account,'ledger'=>$ledger]);
+
+	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	public function delete_acc_etsy(Request $req) {
+		EtsyAccount::where('id', '=', $req->acc_id)->delete();
+		return redirect('auto/etsy');
+	}
 
 
 

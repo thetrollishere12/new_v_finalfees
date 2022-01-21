@@ -11,7 +11,7 @@
 @endsection()
 
 @section('content')
-<div class="load_ctn"><img class="preloader" src="{{ asset('image/preloader.gif') }}"></div>
+
 	<div class="auto-inner">
 
 		<div class="auto-list-container">
@@ -48,41 +48,24 @@
 
 			</div>
 
-			<div class="auto-grid">	</div>
+				<div class="account-table">
+					<!-- Example -->
+
+					
+					<!--  -->
+
+					<div>
+
+						<a href="https://auth.sandbox.ebay.com/oauth2/authorize?client_id={{ env('EBAY_CLENT_APP_ID') }}&response_type=code&redirect_uri={{ env('EBAY_REDIRECT_URI') }}&scope=https://api.ebay.com/oauth/api_scope https://api.ebay.com/oauth/api_scope/buy.order.readonly https://api.ebay.com/oauth/api_scope/buy.guest.order https://api.ebay.com/oauth/api_scope/sell.marketing.readonly https://api.ebay.com/oauth/api_scope/sell.marketing https://api.ebay.com/oauth/api_scope/sell.inventory.readonly https://api.ebay.com/oauth/api_scope/sell.inventory https://api.ebay.com/oauth/api_scope/sell.account.readonly https://api.ebay.com/oauth/api_scope/sell.account https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly https://api.ebay.com/oauth/api_scope/sell.fulfillment https://api.ebay.com/oauth/api_scope/sell.analytics.readonly https://api.ebay.com/oauth/api_scope/sell.marketplace.insights.readonly https://api.ebay.com/oauth/api_scope/commerce.catalog.readonly https://api.ebay.com/oauth/api_scope/buy.shopping.cart https://api.ebay.com/oauth/api_scope/buy.offer.auction https://api.ebay.com/oauth/api_scope/commerce.identity.readonly https://api.ebay.com/oauth/api_scope/commerce.identity.email.readonly https://api.ebay.com/oauth/api_scope/commerce.identity.phone.readonly https://api.ebay.com/oauth/api_scope/commerce.identity.address.readonly https://api.ebay.com/oauth/api_scope/commerce.identity.name.readonly https://api.ebay.com/oauth/api_scope/commerce.identity.status.readonly https://api.ebay.com/oauth/api_scope/sell.finances https://api.ebay.com/oauth/api_scope/sell.item.draft https://api.ebay.com/oauth/api_scope/sell.payment.dispute https://api.ebay.com/oauth/api_scope/sell.item https://api.ebay.com/oauth/api_scope/sell.reputation https://api.ebay.com/oauth/api_scope/sell.reputation.readonly https://api.ebay.com/oauth/api_scope/commerce.notification.subscription https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly"><button class="add_account" class="btn btn-demo" >Connect Account</button></a>
+
+					</div>
+
+				</div>
 
 		</div>
 
 	</div>
 
 	@include('pg_widget.premium')
-
-
-
-	<div class="alert popup_status">
-
-		<button type="button" id="close_alert" class="close">&times;</button>
-
-	</div>
-
-
-
-<script type="text/javascript">
-
-			$('#auto_account').addClass('select-blue');
-			$.ajax({
-	            url: window.origin+"/account",
-	            headers: {
-	                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-	            },
-	            method: "POST",
-	            success: function(result) {
-	                $(".auto-grid").empty().append(result);
-	                $(".load_ctn").fadeOut();
-	            },
-	            error: function(request, status, error) {
-	                $(".auto-grid").empty().append("Error")
-	            }
-	        });
-</script>
 
 @endsection

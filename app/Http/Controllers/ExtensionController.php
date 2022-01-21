@@ -75,7 +75,7 @@ class ExtensionController extends Controller
                     $sale->processing_fees = $feeone['processing_fees'];
                     $sale->tax = $feeone['tax'];
                     $sale->profit = $feeone['profit'];
-                    if (Auth::user()->subscribed('main')) {
+                    if (user_is_subscribed()) {
                         $sale->save();
                         $delete = extensionsale::where('user_id', '=', Auth::id())->where('id', '=', $feeone['extension_id'])->where('order_id','=', $feeone['item_id'])->delete();
                         // return response()->json(['status'=>'valid','message'=>'Added To Spreadsheet','color'=>'#d4edda','text'=>'#262626']);

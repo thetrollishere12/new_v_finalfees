@@ -104,11 +104,9 @@ $month = \Carbon\Carbon::now()->format('m');
          </div>
          
 	@include('pg_widget.premium')
-	<div class="alert popup_status">
-		<button type="button" id="close_alert" class="close">&times;</button>
-	</div>
+
 <style type="text/css">
-#active_year,#active_month{padding:4px 10px;outline:none;border:solid 1px rgba(0, 0, 0, 0.25);}#active_account{padding: 4px 10px;border:solid 1px rgba(0, 0, 0, 0.25);}.auto-inner a{color:inherit}ul button{display:block}.popup_status{position:fixed;top:80%;left:50%;transform:translate(-50%,-50%);z-index:10;display:none;color:#fff}.navbar.navbar-light .navbar-nav .nav-item .nav-link{color:#fff!important;-webkit-transition:.35s;transition:.35s}
+#active_year,#active_month{padding:4px 10px;outline:none;border:solid 1px rgba(0, 0, 0, 0.25);}#active_account{padding: 4px 10px;border:solid 1px rgba(0, 0, 0, 0.25);}.auto-inner a{color:inherit}ul button{display:block}.navbar.navbar-light .navbar-nav .nav-item .nav-link{color:#fff!important;-webkit-transition:.35s;transition:.35s}
 </style>
 @include('pg_widget.add_sheet')
 <script src="{{asset('js/etsy_billing_item.js?34234')}}"></script>

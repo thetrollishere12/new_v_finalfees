@@ -89,14 +89,7 @@ class AutoController extends Controller{
     $ebay_account = DB::table('ebay_accounts')->where('parent_email', '=', "$email_parent")->get();
     return view('auto.widget.account', ['ebay_account' => $ebay_account])->render();
   }
-  
-  public function getOauthtoken(Request $request){
-      
-      Session::put('accountid',$request->accountid);
-      return redirect('https://auth.ebay.com/oauth2/authorize?client_id=BrandonH-Finalfee-PRD-21e9cf7c1-de687d79&response_type=code&redirect_uri=Brandon_Huynh-BrandonH-Finalf-kxqig&scope=https://api.ebay.com/oauth/api_scope https://api.ebay.com/oauth/api_scope/sell.marketing.readonly https://api.ebay.com/oauth/api_scope/sell.marketing https://api.ebay.com/oauth/api_scope/sell.inventory.readonly https://api.ebay.com/oauth/api_scope/sell.inventory https://api.ebay.com/oauth/api_scope/sell.account.readonly https://api.ebay.com/oauth/api_scope/sell.account https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly https://api.ebay.com/oauth/api_scope/sell.fulfillment https://api.ebay.com/oauth/api_scope/sell.analytics.readonly https://api.ebay.com/oauth/api_scope/sell.finances https://api.ebay.com/oauth/api_scope/sell.payment.dispute https://api.ebay.com/oauth/api_scope/commerce.identity.readonly&prompt=login');
-  }
-  
-  
+
   public function promotionlist(Request $request){
       if(isset($request->accountid)){
           $accountid = $request->accountid;
@@ -125,8 +118,6 @@ class AutoController extends Controller{
         $current_token = json_decode($response);
        // var_dump($response);
           
-          
-          
       }
       
       
@@ -134,7 +125,7 @@ class AutoController extends Controller{
   
 
   public function create_acc_ebay(Request $request){
-      
+      return $request;
       if(isset($request->SessID)){
           $SessID=$request->SessID;
     $username=$request->username;
@@ -224,20 +215,10 @@ class AutoController extends Controller{
     
   }
   
-  public function testpromotion(Request $request){
-      if(isset($request->accountid)){
-  
-      }
-  }
-
   public function delete_acc_ebay(Request $request){
-    $id=$_GET['id'];
-    DB::table('ebay_accounts')->where('id', '=', $id)->delete();
+    DB::table('ebay_accounts')->where('id', '=', $request->id)->delete();
     return redirect('auto/ebay');
   }
-
-
-
 
   public function fetchFinalValueFees($order_xml_list, $authKey){
  
@@ -293,10 +274,8 @@ class AutoController extends Controller{
                     'AmountPaid' =>isset( $orderOne['AmountPaid'])?$orderOne['AmountPaid']:0.0,
                     'Subtotal' => isset($orderOne['Subtotal'])?$orderOne['Subtotal']:0.0,
                     'Total' => isset($orderOne['Total'])?$orderOne['Total']:0.0,
-                 
                     'ShippingService' => isset($orderOne['ShippingDetails']['ShippingService'])?$orderOne['ShippingDetails']['ShippingService']:null,
                     'ShippingServiceCost' => isset($orderOne['ShippingServiceSelected']['ShippingServiceCost'])?$orderOne['ShippingServiceSelected']['ShippingServiceCost']:0.0,
-
                     'ActualShippingCost' => isset($orderOne['TransactionArray']['Transaction']['ActualShippingCost'])?$orderOne['TransactionArray']['Transaction']['ActualShippingCost']:0.0,
                     'FinalValueFee' => isset($orderOne['TransactionArray']['Transaction']['FinalValueFee'])?$orderOne['TransactionArray']['Transaction']['FinalValueFee']:0.0,
                     'FeeOrCreditAmount' => isset($orderOne['ExternalTransaction']['FeeOrCreditAmount'])?$orderOne['ExternalTransaction']['FeeOrCreditAmount']:0.0,
@@ -373,7 +352,6 @@ class AutoController extends Controller{
   
   public function fetch_fees($select_id,$startdate, $enddate){
         
-       
        if($startdate == $enddate){
            $startdate =  date('Y-m-d',strtotime($startdate)); 
             $enddate =  date('Y-m-d',strtotime('+2 day',strtotime($enddate))); 
@@ -805,26 +783,6 @@ class AutoController extends Controller{
 
 /*==============Etsy Start==============*/
 
-public function etsyAuthentication(Request $request){
-  $oauth = new OAuth($this->OAUTH_CONSUMER_KEY, $this->OAUTH_CONSUMER_SECRET);
-}
-
-public function sold_etsy(){
-  return view('auto.widget.sold')->render();
-}
-
-public function active_etsy(Request $request){
-  return view('auto.widget.active')->render();
-}
-
-public function import_etsy(){
-  return view('auto.widget.import')->render();
-}
-
-public function create_acc_etsy(Request $request){
-
-}
-
 public function ebay_sold_item(Request $request){
     $email_parent = auth()->user()->email;
     $ebay_account = DB::table('ebay_accounts')->where('parent_email', '=', "$email_parent")->limit(1)->get()->toArray();
@@ -864,7 +822,7 @@ public function multinewsheet(Request $request){
                 $sale->processing_fees = $feeone['processing_fees'];
                 $sale->tax = $feeone['tax'];
                 $sale->profit = $feeone['profit'];
-                if (Auth::user()->subscribed('main')) {
+                if (user_is_subscribed()) {
                     $sale->save();
                     // return response()->json(['status'=>'valid','message'=>'Added To Spreadsheet','color'=>'#d4edda','text'=>'#262626']);
                 }else{
@@ -901,7 +859,7 @@ public function autoebay_newsheet(Request $request){
             $saved->user_id = Auth::id();
             $saved->spreadsheet_name = $request->spreadsheet_name;
 
-            if (Auth::user()->subscribed('main')) {
+            if (user_is_subscribed()) {
                 $saved->save();
                 return response()->json([
                      "status"=>$this->popup($saved),

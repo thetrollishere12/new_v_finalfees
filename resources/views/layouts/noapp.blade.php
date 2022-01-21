@@ -12,7 +12,7 @@
     <!-- Fonts -->
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
-	<link rel="stylesheet" type="text/css" href="{{ asset('css/app.css?02355') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/app.css?02351235') }}">
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/general.css?025') }}">
 	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 	@if(isset($page))
@@ -48,6 +48,7 @@
 		<script type="text/javascript" src="{{ asset('js/'.$page.'.js?'.time().'') }}"></script>
 	@endif
 	<script type="text/javascript" src="{{ asset('js/general.js?'.time().'') }}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 	
 </body>
 </html>

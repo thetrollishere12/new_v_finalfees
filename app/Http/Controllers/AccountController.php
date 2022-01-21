@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use DB;
-use App\User;
+
 use Illuminate\Support\Facades\Auth;
 use App\Mail\Message;
 use ReCaptcha\ReCaptcha;
@@ -13,6 +12,11 @@ use Session;
 use Mail;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+
+use App\Models\User;
+use App\Models\Sale;
+use Laravel\Cashier\Subscription;
+use Laravel\Cashier\SubscriptionItem;
 
 class AccountController extends Controller
 {
@@ -29,7 +33,7 @@ class AccountController extends Controller
     }
 
     public function index(){
-        $sales = DB::table('sales')->where('user_id', '=', Auth::id());
+        $sales = Sale::where('user_id', '=', Auth::id());
 
         $sum = array(
             "sold"=>$sales->sum('sold_price')+$sales->sum('shipping_charge'),
@@ -42,31 +46,30 @@ class AccountController extends Controller
     }
 
     public function settings(){
-         $subscription = DB::table('subscriptions')->where('user_id', '=',auth()->user()->id)->orderBy('created_at', 'desc')->limit(1)->get()[0];
+         $subscription = Subscription::where('user_id', '=',auth()->user()->id)->orderBy('created_at', 'desc')->first();
         return view('account.settings')->with(['page'=>'settings','subscription'=>$subscription]);
     }
 
     public function subscription(){
 
         $page = "subscription";
+   
+        if (user_is_subscribed()) {
+            
+            $subscription = get_user_is_subscribed()->first();
 
-        if (Auth::user()->subscribed('main')) {
-        
-            $id = auth()->user()->id;
-            $subscription = DB::table('subscriptions')->where('user_id', '=', $id)->orderBy('created_at', 'desc')->limit(1);
-
-            switch ($subscription->value('payment_method')) {
+            switch ($subscription->payment_method) {
                 case 'Stripe':
 
-                    \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
+                    \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
-                    $id = $subscription->value('stripe_id');
+                    $id = $subscription->stripe_id;
 
                     $account = \Stripe\Subscription::retrieve($id);
                     
                     return view('account.subscription')->with([
                         'page'=>$page,
-                        'subscription'=>$subscription->get()[0],
+                        'subscription'=>$subscription,
                         'user'=>auth()->user(),
                         'period_end'=>$account->current_period_end,
                         'period_valid'=>$account->current_period_start,
@@ -80,17 +83,11 @@ class AccountController extends Controller
                     
                     $client = new Client();
 
-                    $response = $client->request(
-                        'POST', /*instead of POST, you can use GET, PUT, DELETE, etc*/
-                        'https://api-m.sandbox.paypal.com/v1/oauth2/token?grant_type=client_credentials',
-                        ['auth' => [env('PAYPAL_CLIENT_ID'),env('PAYPAL_SECRET')]] 
-                    );
-
-                    $bearer_token = json_decode($response->getBody())->access_token;
+                    $bearer_token = paypal_bearer_token();
 
                     $response = $client->request(
                         'GET', /*instead of POST, you can use GET, PUT, DELETE, etc*/
-                        'https://api-m.sandbox.paypal.com/v1/billing/subscriptions/'.$subscription->value('paypal_id'),
+                        'https://api-m.sandbox.paypal.com/v1/billing/subscriptions/'.$subscription->paypal_id,
                         ['headers' => 
                             [
                                 'Authorization' => "Bearer {$bearer_token}"
@@ -100,33 +97,9 @@ class AccountController extends Controller
 
                     $subscription_details = json_decode($response->getBody());
 
-                    // $response = $client->request(
-                    //     'GET', /*instead of POST, you can use GET, PUT, DELETE, etc*/
-                    //     'https://api-m.sandbox.paypal.com/v1/billing/plans/'.$subscription_details->plan_id,
-                    //     ['headers' => 
-                    //         [
-                    //             'Authorization' => "Bearer {$bearer_token}"
-                    //         ]
-                    //     ]
-                    // );
-
-                    // $plan_details = json_decode($response->getBody());
-
-
-                    // $response = $client->request(
-                    //     'POST', /*instead of POST, you can use GET, PUT, DELETE, etc*/
-                    //     'https://api-m.sandbox.paypal.com/v1/billing/subscriptions/I-D4YU2NA45DL1/activate',
-                    //     ['headers' => 
-                    //         [
-                    //             'Content-Type'=>"application/json",
-                    //             'Authorization' => "Bearer {$bearer_token}"
-                    //         ]
-                    //     ]
-                    // );
-
                     return view('account.subscription')->with([
                         'page'=>$page,
-                        'subscription'=>$subscription->get()[0],
+                        'subscription'=>$subscription,
                         'user'=>auth()->user(),
                         'details'=>$subscription_details,
                         'period_end'=>Carbon::parse($subscription_details->billing_info->last_payment->time)->addDays(30),
@@ -159,21 +132,15 @@ class AccountController extends Controller
         $page = 'editpayment';
 
         $id = auth()->user()->id;
-        $sub = DB::table('users')->where('id', '=', $id)->value('stripe_id');
+        $sub = User::where('id', '=', $id)->stripe_id;
 
         if (!empty($sub)) {
-            return view('account.editpayment')->with(['page'=>$page]);
+            return view('account.editpayment',['page'=>$page]);
         }else{
             return redirect('/subscription');
         }
     }
 
-    /**
-    * Sending Email.
-    * @param  int $request->user_id
-    * @param  \Illuminate\Http\Request $request
-    * @return \Illuminate\Http\Response
-    */
     public function change_tax(Request $request){
         if ($request->ajax()) {
 
@@ -198,7 +165,6 @@ class AccountController extends Controller
             }
         }
     }
-
 
     public function suggestion(Request $request){
 

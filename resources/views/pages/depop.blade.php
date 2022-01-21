@@ -1,9 +1,4 @@
-@extends('layouts.app')
-
-@section('others')
-	<script type="text/javascript" src="js/general.js"></script>
-	<script type="text/javascript" src="js/countUp.js"></script>
-@endsection
+@extends('layouts.platform')
 
 @section('description')
 Calculate your Depop Paypal fees, shipping amount and profits with our Depop spreadsheet & fee calculator. Free Spreadsheet to record all of your sales.
@@ -17,8 +12,8 @@ Depop Paypal Fee Calculator & Spreadsheet - Calculate Depop Fee.
 
 <div id="main-calculator">
 	<div class="main-container">
-    	<h1>DEPOP FEE CALCULATOR</h1>
-		<div class="depop-inner">
+    	<h1 style="background:{{ $json['color']  }}">DEPOP FEE CALCULATOR</h1>
+		<div class="p-6">
 			@include('pg_widget.name_date')
 			@include('pg_widget.sold')
 			@include('pg_widget.ship_charge')
@@ -32,7 +27,6 @@ Depop Paypal Fee Calculator & Spreadsheet - Calculate Depop Fee.
 				@include('inc.paypal_slide')
 				@include('pg_widget.profit')
 				@include('pg_widget.add_to_sheet')
-				@include('pg_widget.premium')
 			</div>
 			@include('inc.ad')
 		</div>
@@ -49,7 +43,7 @@ Depop Paypal Fee Calculator & Spreadsheet - Calculate Depop Fee.
 
 
 		<div class="about-container about-fees">
-			<h2>ABOUT DEPOP FEES</h2>
+			<h2 style="background:{{ $json['color']  }}">ABOUT DEPOP FEES</h2>
 			<p>Depop is an online fasion marketplace focused on unique items, vintage & luxury fashion, art and books. For each time a transaction is made, Depop collects 10% of the total sold price including shipping charges plus <a href="{{url('/paypal')}}">Paypal fees</a>.</p>
 		</div>
 		@include('inc.graph')

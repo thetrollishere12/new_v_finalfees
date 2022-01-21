@@ -39,11 +39,9 @@ Ebay Auto Sold Product Panel
 		</div>
 	</div>
 	@include('pg_widget.premium')
-	<div class="alert popup_status">
-		<button type="button" id="close_alert" class="close">&times;</button>
-	</div>
+
 <style type="text/css">
-.auto-inner a{color:inherit}ul button{display:block}.popup_status{position:fixed;top:80%;left:50%;transform:translate(-50%,-50%);z-index:10;display:none;color:#fff}.import-table{padding-bottom:5px}.navbar.navbar-light .navbar-nav .nav-item .nav-link{color:#fff!important;-webkit-transition:.35s;transition:.35s}
+.auto-inner a{color:inherit}ul button{display:block}.import-table{padding-bottom:5px}.navbar.navbar-light .navbar-nav .nav-item .nav-link{color:#fff!important;-webkit-transition:.35s;transition:.35s}
 </style>
 <script type="text/javascript">
 $("#auto_sold").addClass("select-blue");var active_select="<?php echo @$ebay_account[0]->id ?>";$.ajax({url:window.origin+"/sold",headers:{"X-CSRF-TOKEN":$('meta[name="csrf-token"]').attr("content")},method:"POST",data:"active_select="+active_select,success:function(e){$(".auto-grid").empty().append(e),$(".load_ctn").fadeOut()},error:function(e,t,a){$(".auto-grid").empty().append("Error")}});

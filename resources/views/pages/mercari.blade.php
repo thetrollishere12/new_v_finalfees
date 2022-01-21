@@ -1,9 +1,4 @@
-@extends('layouts.app')
-
-@section('others')
-	<script type="text/javascript" src="js/general.js"></script>
-	<script type="text/javascript" src="js/countUp.js"></script>
-@endsection
+@extends('layouts.platform')
 
 @section('description')
 Calculate your Mercari fees, processing fees and profits with our Mercari spreadsheet & fee calculator. Free Spreadsheet to record all of your sales.
@@ -17,8 +12,8 @@ Mercari Fee Calculator & Spreadsheet - Calculate Your Mercari fees
 
 <div id="main-calculator">
 	<div class="main-container">
-    	<h1>MERCARI FEE CALCULATOR</h1>
-    	<div class="mercari-inner">
+    	<h1 style="background:{{ $json['color']  }}">MERCARI FEE CALCULATOR</h1>
+    	<div class="p-6">
     		@include('pg_widget.name_date')
 			@include('pg_widget.sold')
 			@include('pg_widget.ship_charge')
@@ -53,14 +48,13 @@ Mercari Fee Calculator & Spreadsheet - Calculate Your Mercari fees
 				@include('inc.processing_slide')
 				@include('pg_widget.profit')
 				@include('pg_widget.add_to_sheet')
-				@include('pg_widget.premium')
 			</div>
 			@include('inc.ad')
 		</div>
 	</div>
 	<div class="details-container">
 		<div class="about-container">
-			<h2>ABOUT @yield('h2') FEES</h2>
+			<h2 style="background:{{ $json['color']  }}">ABOUT @yield('h2') FEES</h2>
 			<p>Mercari is an online platform where you can sell and buy anything. For each time a transaction is made, Mercari collects 10% of the total sold price plus a 2.9% + $0.30 processing fee. If you direct deposit earnings under $10 to your bank, a $2 processing fee may apply.</p>
 		</div>
 		@include('inc.graph')

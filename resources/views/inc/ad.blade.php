@@ -1,4 +1,4 @@
-@if(Auth::user() && !Auth::user()->subscribed('main'))
+@if(Auth::user() && !user_is_subscribed())
 <div class="ad-container">
     <ins class="adsbygoogle"
      style="display:block"

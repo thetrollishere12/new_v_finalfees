@@ -83,8 +83,7 @@ $(document).ready(function () {
         });
     }
     function t(e, a) {
-        "valid" === e || "empty" === e ? $(".popup_status").text(a.success).css({ background: a.color }) : $(".popup_status").text("Error. Please Try Again").css({ background: "#ea3f4f" }),
-            $(".popup_status").stop(!0).fadeIn("fast").delay(1e3).fadeOut("fast");
+        "valid" === e || "empty" === e ? popup('green',t.success) : popup('red',"Error. Please Try Again"),
     }
     e("summary"),
         a(),

@@ -10,20 +10,20 @@ $(document).ready(function () {
             r = $("select[name=direct_deposit]").val(),
             o = t + n,
             standard = 0,
-            p = i + a + 0.1 * o;
+            p = i + a + fees['fee_type']['platform_fees']['amount']/100 * o;
         if (t.toFixed(2) > 0) (standard = parseFloat($("input[name=standard]").val() || 0)), p < 0 && (p = 0);
         var c = (o - p).toFixed(2);
-        if (((direct_deposit_fee = "yes" == r && c < 10 ? 2 : 0), c < 0)) s = 0;
+        if (((direct_deposit_fee = "yes" == r && c < 10 ? fees['fee_type']['processing_fees']['amount'] : 0), c < 0)) s = 0;
         var l = c - o * s,
             d = (l / p) * 100 || 0,
             u = (l / t) * 100 || 0;
         l < 0 && ((u = 0), (d = 0)), (u !== 1 / 0 && u !== -1 / 0) || (u = 0), (d !== 1 / 0 && d !== -1 / 0) || (d = 0), profit_c(l, d, u);
-        var m = new CountUp("other-fees", 0, direct_deposit_fee + t * percent + standard, 2, 0.2, e),
-            _ = new CountUp("main-tax", 0, o * s, 2, 0.2, e),
-            h = new CountUp("main-return", 0, d, 2, 0.2, e),
-            f = new CountUp("main-margin", 0, u, 2, 0.2, e),
-            g = new CountUp("main-fees", 0, 0.1 * o, 2, 0.2, e),
-            v = new CountUp("main-profit", 0, l, 2, 0.2, e);
+        var m = new CountUp("other-fees", 0, direct_deposit_fee + t * percent + standard, fees['fee_type']['processing_fees']['amount'], 0.2, e),
+            _ = new CountUp("main-tax", 0, o * s, fees['fee_type']['processing_fees']['amount'], 0.2, e),
+            h = new CountUp("main-return", 0, d, fees['fee_type']['processing_fees']['amount'], 0.2, e),
+            f = new CountUp("main-margin", 0, u, fees['fee_type']['processing_fees']['amount'], 0.2, e),
+            g = new CountUp("main-fees", 0, fees['fee_type']['platform_fees']['amount']/100 * o, fees['fee_type']['processing_fees']['amount'], 0.2, e),
+            v = new CountUp("main-profit", 0, l, fees['fee_type']['processing_fees']['amount'], 0.2, e);
         graph(t, n, a, i, _.endVal, m.endVal, 0, g.endVal, v.endVal), m.error ? console.error(paypal_fees.error) : (m.start(), g.start(), f.start(), h.start(), v.start(), _.start());
     }
     e(),

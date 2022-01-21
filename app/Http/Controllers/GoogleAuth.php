@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User;
+use App\Models\User;
 use Socialite;
 use Auth;
 use App\Apikey;
@@ -53,7 +53,7 @@ class GoogleAuth extends Controller
             User::where('id',Auth::id())->update(['api_client_id'=>$client_id]);
             session()->put('user_client_id',$client_id);
             
-            return redirect()->to('/home');
+            return redirect()->intended("/");
         } catch (Exception $e) {
             return redirect('/register');
         }

@@ -17,8 +17,8 @@ Paypal Fee Calculator & spreadsheet - Calculate Paypal Fees
 
 <div id="main-calculator">
 	<div class="main-container">
-    	<h1>PAYPAL FEE CALCULATOR</h1>
-    	<div class="paypal-inner">
+    	<h1 style="background:{{ $json['color']  }}">PAYPAL FEE CALCULATOR</h1>
+    	<div class="p-6">
     		@include('pg_widget.name_date')
 			@include('pg_widget.sold')
 
@@ -74,8 +74,8 @@ Paypal Fee Calculator & spreadsheet - Calculate Paypal Fees
 					</div>
 				</div>
 				<div class="button-container">
-					<button class="p-reset" name="p-reset">Reset</button>
-					<button class="p-edit" name="p-edit">Edit Fees</button>
+					<button class="p-reset text-sm" name="p-reset">Reset</button>
+					<button class="p-edit text-sm" name="p-edit">Edit Fees</button>
 				</div>
 				@include('pg_widget.profit')
 				@include('pg_widget.add_to_sheet')
@@ -86,7 +86,7 @@ Paypal Fee Calculator & spreadsheet - Calculate Paypal Fees
 	</div>
 	<div class="details-container">
 		<div class="about-container">
-			<h2>ABOUT PAYPAL FEES</h2>
+			<h2 style="background:{{ $json['color']  }}">ABOUT PAYPAL FEES</h2>
 			<p>Paypal is a company that offers services which allows users to make online transactions, receive payments and money transfers. For majority of all Paypal transactions, you will be charged a Paypal transaction fee at 2.9% + $0.30. Paypal transaction fee may also vary based on location, type of currency and method.</p>
 		</div>
 		@include('inc.graph')

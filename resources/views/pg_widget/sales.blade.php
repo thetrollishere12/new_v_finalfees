@@ -1,9 +1,3 @@
-<?php
-$path = storage_path() . "/json/currency.json"; // ie: /var/www/laravel/app/storage/json/filename.json
-
-$json = json_decode(file_get_contents($path), true); 
-
-?>
 <table>
 	<tr>
 		<th>Sale Date</th>
@@ -21,10 +15,10 @@ $json = json_decode(file_get_contents($path), true);
 		<th></th>
 		<th></th>
 	</tr>
-	@foreach($limit as $key=>$s)
+	@foreach($sales as $key=>$s)
 	<tr>
 		<th>
-			<input type="date" maxlength="20" required name="date" value="{{$s->sale_date}}">
+			<input type="date" maxlength="20" required name="date" value="{{$s->date}}">
 		</th>
 		<th>
 			<input type="text" maxlength="20" name="name" value="{{$s->name}}">
@@ -92,8 +86,9 @@ $json = json_decode(file_get_contents($path), true);
 	</tr>
 	@endforeach
 </table>
-@if(Auth::user()->subscribed('main'))
-<div class="pagination-ctn">{!! $limit->links() !!}</div>
+
+@if(user_is_subscribed())
+<div class="pagination-ctn">{!! $sales->links() !!}</div>
 @endif
 
 <script type="text/javascript">

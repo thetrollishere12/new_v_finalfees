@@ -4,33 +4,22 @@
 @endsection()
 @section('content')
 
+@if(session('subscribed'))
+<div class="thanks-alert">Thank you so much for subscribing.</div>
+@endif
 
-	@if(session('subscribed'))
-	<div class="thanks-alert">Thank you so much for subscribing.</div>
-	@endif
-
-
-	@if(Auth::user()->subscribed('main') && Auth::user()->subscription('main')->onGracePeriod())
-		<div class="sub-container">
-			<div class="sub_end_name"><b>Subscription End Date</b></div>
-			<div class="sub_end_date">Your subscription is scheduled to end on <b>{{ Carbon\Carbon::parse($period_end)->format('F d Y') }}</b></div>
-			<div>
-				@if($subscription->payment_method=='main_paypal' && $date_ends!='')
-				<form action="{{url('/resume_subscription_paypal')}}" class="sub_form" method="POST">
-		@csrf
-		<input type="hidden" name="sub_id" value="<?php echo Auth::user()->paypal_id; ?>">
-		<button class="sub-btn resume_sub" type="submit">Resume Subscription</button>
-	</form>
-	@else
-	<form action="{{url('/resume_subscription')}}" method="POST">
-					@csrf
-					<button class="sub-btn resume_sub" type="submit">Resume Subscription</button>
-				</form>
-				@endif
-				
-			</div>
+@if(user_is_subscribed() && user_is_onGracePeriod())
+	<div class="sub-container">
+		<div class="sub_end_name"><b>Subscription End Date</b></div>
+		<div class="sub_end_date">Your subscription is scheduled to end on <b>{{ Carbon\Carbon::parse($period_end)->format('F d Y') }}</b></div>
+		<div>
+			<form action="{{url('/resume_subscription')}}" method="POST">
+				@csrf
+				<button class="sub-btn resume_sub" type="submit">Resume Subscription</button>
+			</form>
 		</div>
-	@endif
+	</div>
+@endif
 
 @if (Session::has('message'))
 <div class="alert alert-dismissible">
@@ -40,17 +29,17 @@
 @endif
 	
 
-<div class="sub-container">
+<div class="sub-container text-sm">
 
 	<table>
-		@if(Auth::user()->subscribed('main'))
+		@if(user_is_subscribed())
 
 			<tr>
 				<th>Billing</th>
 				<th>
-					@if(Auth::user()->subscribed('main') && Auth::user()->subscription('main')->onGracePeriod() == false)
+					@if(user_is_subscribed() && user_is_onGracePeriod() == false)
 					Next ${{$amount/100}} payment will be charged on {{ Carbon\Carbon::parse($period_end)->format('F d Y') }}
-					@elseif(Auth::user()->subscribed('main') && Auth::user()->subscription('main')->onGracePeriod() == true)
+					@elseif(user_is_subscribed() && user_is_onGracePeriod() == true)
 					Billing scheduled to end on {{ Carbon\Carbon::parse($period_end)->format('F d') }}
 					@else
 					No Billing
@@ -71,11 +60,11 @@
 			</tr>
 			<tr>
 				<th>Payment Information</th>
-				@if($subscription->payment_method == 'Stripe' && isset($user->card_brand) && isset($user->card_last_four))
-				<th><img class="card_img" src="image/{{ strtolower($user->card_brand) }}.svg"> ending with {{ $user->card_last_four }}</th>
+				@if($subscription->payment_method == 'Stripe' && isset($user->pm_type) && isset($user->pm_last_four))
+				<th class="flex"><img class="card_img" src="image/{{ strtolower($user->pm_type) }}.svg"> ending with {{ $user->pm_last_four }}</th>
 				<th><a href="{{url('/editpayment')}}"><button class="edit_p_btn">Edit Payment</button></a></th>
-				@elseif($subscription->payment_method == 'Paypal' && isset($user->paypal_id) && isset($user->paypal_email))
-				<th><img class="card_img" src="image/paypal.svg"> {{ $details->subscriber->email_address }}</th>
+				@elseif($subscription->payment_method == 'Paypal' && isset($user->paypal_payer_id) && isset($user->paypal_email))
+				<th class="flex"><img class="card_img" src="image/paypal.svg"> {{ $details->subscriber->email_address }}</th>
 				@else
 				<th>No Payment Info</th>
 				<th></th>
@@ -108,7 +97,7 @@
 
 <div class="sub-ctn-div">
 
-	<div class=" regular-b @if(Auth::user()->subscribed('main') == false)selected @endif">
+	<div class=" regular-b @if(user_is_subscribed() == false)selected @endif">
 
 	   	<div class="regular-title">Regular</div>
 	   	<p class="regular-p"><span class="icon-checkmark"></span> Free/month</p>
@@ -116,20 +105,20 @@
 		<p class="regular-p"><span class="icon-checkmark"></span> Up To 25 Sales</p>
 	</div>
 
-	<div class="premium-b @if(Auth::user()->subscribed('main')) selected-p @endif">
+	<div class="premium-b @if(user_is_subscribed()) selected-p @endif">
 		
 		@include('inc.upgrade_acc')
 
-		@if(Auth::user()->subscribed('main'))
+		@if(user_is_subscribed())
 
-			@if(Auth::user()->subscription('main')->onGracePeriod())
+			@if(user_is_onGracePeriod())
 			<form action="{{url('/resume_subscription')}}" class="sub_form" method="POST">
 				@csrf
 				<button class="sub-btn resume_sub" type="submit">Resume Subscription</button>
 			</form>
 			@endif
 
-			@if(Auth::user()->subscription('main')->onGracePeriod() == false)
+			@if(user_is_onGracePeriod() == false)
 			<form action="{{url('/cancel_subscription')}}" class="sub_form" method="POST">
 				@csrf
 				<button class="sub-btn cancel_sub" type="submit">Cancel Subscription</button>

@@ -15,14 +15,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'PagesController@index');
 
-Route::get('/index', 'PagesController@index');
+Route::get('/index', 'PagesController@index')->name('dashboard');
 
 Route::get('/amazon','PagesController@amazon');
-
 Route::get('/bonanza','PagesController@bonanza');
-
 Route::get('/depop','PagesController@depop');
-
 Route::get('/ebay','PagesController@ebay');
 
 // Route::get('/ebay-au','PagesController@ebay_au');
@@ -30,53 +27,29 @@ Route::get('/ebay','PagesController@ebay');
 // Route::get('/ebay-uk','PagesController@ebay_uk');
 
 Route::get('/ebay-ca','PagesController@ebay_ca');
-
 Route::get('/ebay-us','PagesController@ebay_us');
-
 Route::get('/etsy','PagesController@etsy');
-
 Route::get('/fiverr','PagesController@fiverr');
-
 Route::get('/goat','PagesController@goat');
-
 Route::get('/grailed','PagesController@grailed');
-
 Route::get('/mercari','PagesController@mercari');
-
 Route::get('/paypal','PagesController@paypal');
-
 Route::get('/poshmark','PagesController@poshmark');
-
 Route::get('/stockx','PagesController@stockx');
-
 Route::get('/stripe','PagesController@stripe');
-
 Route::get('/tradesy','PagesController@tradesy');
-
 Route::get('/offerup','PagesController@offerup');
-
 Route::get('/letgo','PagesController@letgo');
-
 Route::get('/craigslist','PagesController@craigslist');
-
 Route::get('/company','PagesController@company');
-
 Route::get('/facebook-marketplace','PagesController@facebook');
-
 Route::get('/kijiji','PagesController@kijiji');
-
 Route::get('/ecrater','PagesController@ecrater');
-
 Route::get('/newegg','PagesController@newegg');
-
 Route::get('/chairish','PagesController@chairish');
-
 Route::get('/rubylane','PagesController@rubylane');
-
 Route::get('/ebid','PagesController@ebid');
-
 Route::get('/rakuten','PagesController@rakuten');
-
 Route::get('/auto','PagesController@auto');
 
 Route::get('/error','PagesController@error');
@@ -111,6 +84,10 @@ Route::get('/policy-terms',function(){
     return view('/terms/policy-terms')->with('page','privacy');
 });
 
+// Send Platform Request
+
+Route::post('/send-platform-request','PlatformController@send_request');
+
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     // extension
@@ -124,7 +101,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::post('/pg_sheet_list','PagesController@list');
     Route::post('/pg_sheet_list_expense','PagesController@list_expense');
     Route::post('/pg_sheet_list_refund','PagesController@list_refund');
-
 
     // Sales
     Route::post('pages/store','PagesController@store')->middleware('verified');
@@ -186,14 +162,14 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::post('/cancel_subscription', 'PaymentController@cancel_subscription');
 
     Route::post('/resume_subscription', 'PaymentController@resume_subscription');
+
+    Route::post('/stripe-payment-subscription-update','PaymentController@stripe_payment_subscription_update');
+
     // Paypal
-    // Route::resource('payment_paypal','PaymentController');
 
-    // new paypal
-
-        // success
-        Route::post('/paypal-sub-approved','PaypalController@paypal_sub_approved');
-        // check
+    // success
+    Route::post('/paypal-sub-approved','PaypalController@paypal_sub_approved');
+    // check
 
     Route::get('/payment_paypal','PaymentController@payment_paypal');
     Route::post('/payment_paypal','PaymentController@payment_paypal');
@@ -206,8 +182,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('/editpayment', 'AccountController@editpayment');
 
     Route::get('/settings','AccountController@settings');
-
-    Route::post('/paymentchange','PaymentController@paymentchange');
 
     Route::post('account/change_tax','AccountController@change_tax');
 
@@ -222,18 +196,33 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     //etsy
     Route::get('auto/etsy','EtsyController@index');
 
-
     Route::get('auto/etsy/account','EtsyController@account');
-
 
     Route::get('auto/etsy/account-connect','EtsyController@connect');
 
-
     Route::get('/auto/etsy/sold/{shop_id}','EtsyController@sold');
+
+    Route::get('/auto/etsy/active/{shop_id}','EtsyController@active');
+
+    Route::get('/auto/etsy/summary/{shop_id}','EtsyController@summary');
 
     Route::post('/auto/etsy/add-sold-listing','EtsyController@addSoldListing');
 
-  
+
+
+
+
+
+
+
+
+    // new ebay
+
+    Route::get('/auto/ebay/success','EbayController@connect');
+
+
+
+
 
     // Route::get('auto/ebay','AutoController@ebay_auto');
     // Route::get('auto/etsy','AutoController@etsy_auto');
@@ -274,12 +263,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     // END : auto ebay by ward
     
     Route::get('testapi','AutoController@testapi');
-    Route::get('getOauthtoken','AutoController@getOauthtoken');
+    
     Route::get('promotionlist','AutoController@promotionlist');
-    Route::get('testpromotion','AutoController@promotionlist');
-
-
-
 
 
     // Etsy Email Controller

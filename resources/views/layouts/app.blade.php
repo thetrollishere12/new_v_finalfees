@@ -25,9 +25,12 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css?020') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/general.css?025') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css?0223345345540') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/general.css?03453542325') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/popup.css?'.time().'') }}">
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/platform.css?'.time().'') }}">
+
     @if(isset($page))
         <link rel="stylesheet" type="text/css" href="{{ asset('css/'.$page.'.css?'.time().'') }}">
     @endif
@@ -56,8 +59,6 @@
     @include('inc.header')
     @include('inc.nav')
     <main>
-        @include('inc.popup')
-
         @if (Session::has('success'))
         <div class="alert alert-dismissible">
             <button type="button" id="close_alert" class="close">&times;</button>
@@ -75,5 +76,6 @@
     @endif
     <script type="text/javascript" src="{{ asset('js/graph.js?'.time().'') }}"></script>
     <script type="text/javascript" src="{{ asset('js/ajax.js?'.time().'') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>

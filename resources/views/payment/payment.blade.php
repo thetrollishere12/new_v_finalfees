@@ -148,7 +148,7 @@
 </style>
 <script type="text/javascript">
 	
-	var stripe = Stripe("{{ env('STRIPE_PUB_KEY') }}");
+	var stripe = Stripe("{{ env('STRIPE_KEY') }}");
 
 </script>
 <script type="text/javascript">
@@ -208,14 +208,28 @@ form.addEventListener('submit', function(e) {
 
 // Create single-use token to charge the user
 function createToken() {
-    stripe.createToken(cardElement).then(function(result) {
-        if (result.error) {
-            // Inform the user if there was an error
-            resultContainer.innerHTML = '<p>'+result.error.message+'</p>';
-        } else {
-            stripeTokenHandler(result.token);
-        }
-    });
+
+	stripe
+	  .createPaymentMethod({
+	    type: 'card',
+	    card: cardElement,
+	    billing_details: {
+	      name: '{{  auth()->user()->name }}',
+	      email: '{{  auth()->user()->email }}'
+	    },
+	})
+	.then(function(result) {
+	    console.log(result);
+	    if (result.error) {
+	        // Inform the user if there was an error.
+	        resultContainer.innerHTML = '<p>'+result.error.message+'</p>';
+	    } else {
+	        console.log(result);
+	        // Send the token to your server.
+	        stripeTokenHandler(result.paymentMethod.id);
+	    }
+	});
+
 }
 
 // Callback to handle the response from stripe
@@ -223,10 +237,10 @@ function stripeTokenHandler(token) {
     // Insert the token ID into the form so it gets submitted to the server
     var hiddenInput = document.createElement('input');
     hiddenInput.setAttribute('type', 'hidden');
-    hiddenInput.setAttribute('name', 'stripeToken');
-    hiddenInput.setAttribute('value', token.id);
+    hiddenInput.setAttribute('name', 'paymentMethod');
+    hiddenInput.setAttribute('value', token);
     form.appendChild(hiddenInput);
-	
+    
     // Submit the form
     form.submit();
 }
@@ -271,11 +285,7 @@ $('input[name=billing_checkbox]').click(function(){
 	        },
 
 	        onApprove: function(data, actions) {
-	
-	  
-	         
-	        	console.log(actions);
-	            console.log(data);
+
 	           $.ajax({
 	                url: window.origin+"/paypal-sub-approved",
 	                headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
@@ -293,7 +303,6 @@ $('input[name=billing_checkbox]').click(function(){
 	                },
 	            });
 
-	    
 	        }
       }).render('#paypal-button-container'); // Renders the PayPal button
 

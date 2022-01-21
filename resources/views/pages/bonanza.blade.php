@@ -1,9 +1,4 @@
-@extends('layouts.app')
-
-@section('others')
-	<script type="text/javascript" src="js/general.js"></script>
-	<script type="text/javascript" src="js/countUp.js"></script>
-@endsection
+@extends('layouts.platform')
 
 @section('description')
 Calculate your Bonanza Paypal fees and shipping with our simple Bonanza spreadsheet & fee calculator. Free Spreadsheet to record all of your sales.
@@ -17,8 +12,8 @@ Bonanza Paypal Fee Calculator & Spreadsheet
 
 <div id="main-calculator">
 	<div class="main-container">
-    	<h1>BONANZA FEE CALCULATOR</h1>
-    	<div class="bonanza-inner">
+    	<h1 style="background:{{ $json['color']  }}">BONANZA FEE CALCULATOR</h1>
+    	<div class="p-6">
     		@include('pg_widget.name_date')
 			<div class="input-container">
 				<div class="label">
@@ -35,10 +30,9 @@ Bonanza Paypal Fee Calculator & Spreadsheet
 				</div>
 				<div>
 					<select name="seller_ad">
-						<option value=".035">Economy (3.5%)</option>
-						<option value=".09">Basic (9%)</option>
-						<option value=".19">Superior (19%)</option>
-						<option value=".3">Elite (30%)</option>
+						@foreach($json["fees"]["fee_type"]["advertising_listing"]["list"] as $select)
+						<option value="{{ $select['amount']/100 }}">{{ $select['name'] }} ({{ $select['amount'] }}%)</option>
+						@endforeach
 					</select>
 				</div>
 			</div>
@@ -91,14 +85,13 @@ Bonanza Paypal Fee Calculator & Spreadsheet
 				@include('inc.processing_slide')
 				@include('pg_widget.profit')
 				@include('pg_widget.add_to_sheet')
-				@include('pg_widget.premium')
 			</div>
 			@include('inc.ad')
 		</div>
 	</div>
 	<div class="details-container">
 		<div class="about-container">
-			<h2>ABOUT BONANAZA FEES</h2>
+			<h2 style="background:{{ $json['color']  }}">ABOUT BONANAZA FEES</h2>
 			<p>Bonanza is an affordable online platform very similar to eBay, where you can find and sell a variety of products. Fees are determined based on the final offer value (FOV); the amount you received on your sold item plus any portion on shipping exceeding $10. No matter what amount your FOV is Bonanza's minimum fee is always at least $0.50. Although, for FOV under $500 Bonanza takes 3.5% (or your selected percentage). For FOV over $500 Bonanza takes 3.5% (or your selected percentage) plus 1.5% of the amount over $500.</p>
 		</div>
 		@include('inc.graph')
